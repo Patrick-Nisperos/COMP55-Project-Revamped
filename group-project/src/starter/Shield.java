@@ -12,8 +12,10 @@ public class Shield {
 	}
 	
 	public boolean isDestroyed() {
-		//Insert code here
-		return true;
+		if(health == 0) {
+			return true;
+		}
+		return false;
 	}
 
 	public int getHeight() {
