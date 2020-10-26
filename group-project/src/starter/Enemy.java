@@ -41,7 +41,7 @@ public void setCordinateX(int cordinateX) {
 
 public int getCordinateY() {
 	return cordinateY;
-}
+} 
 
 public void setCordinateY(int cordinateY) {
 	this.cordinateY = cordinateY;
