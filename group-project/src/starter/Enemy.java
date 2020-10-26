@@ -23,7 +23,7 @@ public void setTypeOfEnemy(EnemyType typeOfEnemy) {
 	this.typeOfEnemy = typeOfEnemy;
 }
 
-public boolean isDestroyed() {
+public boolean isDestroyed() { 
 	return isDestroyed;
 }
 
