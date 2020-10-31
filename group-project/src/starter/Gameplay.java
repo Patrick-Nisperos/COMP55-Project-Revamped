@@ -11,6 +11,7 @@ public class Gameplay extends GraphicsProgram {
 	public static final int PROGRAM_HEIGHT = 900;
 	private int userMovementSpeed = 0;
 	private int enemyMovementSpeed = 0;
+	private GImage mainMenuScreen;
 	
 	
 	public void init() {
@@ -20,6 +21,9 @@ public class Gameplay extends GraphicsProgram {
 	public void run() { // Main Function
 		GRect rect = new GRect(20, 20, 50, 40);
 		add(rect);
+		mainMenuScreen = new GImage("officialMainMenu.png");
+		add(mainMenuScreen);
+
 	}
 
 	public void displayMenu() { //displays menu screen here
