@@ -8,6 +8,7 @@ public class CharacterEntity {
 	private int coordY;
 	private Projectile userProjectile;
 	private Hitbox userHitbox;
+
 	
 	public CharacterEntity(int health, int damage, boolean isDestroyed, int coordX, int coordY, Projectile userProjectile, Hitbox userHitbox) {
 		this.health = health;
@@ -32,6 +33,11 @@ public class CharacterEntity {
 		return damage;
 	}
 	public boolean isDestroyed() {
+		if(health == 0) {
+			isDestroyed = true;
+		}else {
+			isDestroyed = false;
+		}
 		return isDestroyed;
 	}
 	public int getCoordX() {

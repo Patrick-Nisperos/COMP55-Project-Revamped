@@ -24,6 +24,11 @@ public void setTypeOfEnemy(EnemyType typeOfEnemy) {
 }
 
 public boolean isDestroyed() { 
+	if(typeOfEnemy.getHealth() == 0) {
+		isDestroyed = true;
+	}else {
+		isDestroyed = false;
+	}
 	return isDestroyed;
 }
 
