@@ -21,6 +21,8 @@ public class Gameplay extends GraphicsProgram {
 	public void run() { // Main Function
 		mainMenuScreen = new GImage("officialMainMenu.png");
 		add(mainMenuScreen);
+		GImage Tank = new GImage ("blue tank.png", 250, 250);
+		add(Tank);
 
 	}
 
