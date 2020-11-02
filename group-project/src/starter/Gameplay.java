@@ -21,6 +21,9 @@ public class Gameplay extends GraphicsProgram {
 	public void run() { // Main Function
 		mainMenuScreen = new GImage("officialMainMenu.png");
 		add(mainMenuScreen);
+		
+		GRect rectangle = new GRect(200, 200, 100, 100);
+		add(rectangle);
 
 	}
 
