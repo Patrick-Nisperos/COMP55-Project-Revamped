@@ -37,17 +37,12 @@ public class InputListeners extends JFrame implements KeyListener{
 		  
 		  label = new JLabel();
 		  label.setBounds(0, 0, 100, 100);
-		  //label.setIcon(icon);
-		  //label.setBackground(Color.red);
-		  //label.setOpaque(true);
-//		  this.getContentPane().setBackground(Color.black);
 		  this.add(label);
 		  this.setVisible(true);
 		 }
 
 		 @Override
 		 public void keyTyped(KeyEvent e) {
-		  //keyTyped = Invoked when a key is typed. Uses KeyChar, char output
 		  switch(e.getKeyChar()) {
 		   case 'a': label.setLocation(label.getX()-10, label.getY());
 		    break;
@@ -63,7 +58,6 @@ public class InputListeners extends JFrame implements KeyListener{
 
 		 @Override
 		 public void keyPressed(KeyEvent e) {
-		  //keyPressed = Invoked when a physical key is pressed down. Uses KeyCode, int output
 		  switch(e.getKeyCode()) {
 		  case 37: label.setLocation(label.getX()-10, label.getY());
 		   break;
@@ -78,7 +72,6 @@ public class InputListeners extends JFrame implements KeyListener{
 
 		 @Override
 		 public void keyReleased(KeyEvent e) {
-		  //keyReleased = called whenever a button is released
 		  System.out.println("You released key char: " + e.getKeyChar());
 		  System.out.println("You released key code: " + e.getKeyCode());
 		 }
