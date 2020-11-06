@@ -19,7 +19,6 @@ public class Level {
 	
 	Hitbox enemyLightHitbox = new Hitbox(50, 70);
 	EnemyType typeLight = new EnemyType(50, 10, enemyLightHitbox, EnemyTypeCode.LIGHT);
-	
 	 
 	Hitbox enemyMediumHitbox = new Hitbox(60, 80);
 	EnemyType typeMedium = new EnemyType(100, 20, enemyMediumHitbox, EnemyTypeCode.MEDIUM);
@@ -30,8 +29,6 @@ public class Level {
 	Projectile enemyProjectile = new Projectile(5);
 	
 	Shield gameShield = new Shield(100, 200, 500);
-	
-	
 	
 	public Level(int numberOfEnemiesLight, int numberOfEnemiesMedium, int numberOfEnemiesHeavy, int numberOfPlayers, int numberOfShields) {
 		this.numberOfEnemiesLight = numberOfEnemiesLight;
