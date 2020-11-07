@@ -25,7 +25,7 @@ public class InputListeners extends JFrame implements KeyListener{
 		  }
 	
 		 JLabel label;
-		 GImage icon;
+		 GImage icon; 
 		 
 		 InputListeners(){  
 		  this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
