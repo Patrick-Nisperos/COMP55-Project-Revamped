@@ -22,8 +22,6 @@ public class Level {
 	
 	Hitbox enemyLightHitbox = new Hitbox(50, 70);
 	EnemyType typeLight = new EnemyType(50, 10, enemyLightHitbox, EnemyTypeCode.LIGHT);
-	Enemy enemyLight = new Enemy(typeLight, false, 100, 100, enemyProjectile);
-	
 	 
 	Hitbox enemyMediumHitbox = new Hitbox(60, 80);
 	EnemyType typeMedium = new EnemyType(100, 20, enemyMediumHitbox, EnemyTypeCode.MEDIUM);
@@ -33,20 +31,28 @@ public class Level {
 	EnemyType typeHeavy = new EnemyType(200, 50, enemyHeavyHitbox, EnemyTypeCode.HEAVY);
 	Enemy enemyHeavy = new Enemy(typeHeavy, false, 100, 100, enemyProjectile);
 	
-	Shield gameShield = new Shield(100, 200, 500);
-	
-	
+	Shield tempGameShield1 = new Shield(100, 200, 500, 200, 700);
+	Shield tempGameShield2 = new Shield(100, 200, 500, 200, 700);
 	
 	public Level(int levelNumber) {
 		this.setLevelNumber(levelNumber);
-		setNumberOfEnemiesLight(21);
 		
 		if(levelNumber == 1) {
+			setNumberOfEnemiesLight(21);
 			for(int i = 0; i == 21; i++) {
-				if(i < 8) { //layer one
-					
+				if(i < 6) { //layer one
+					Enemy temp = new Enemy(typeLight, false, 100 + (20 * i), 100 , enemyProjectile);
+					enemies.add(temp);
+				} if(i > 6 && i < 14) {
+					Enemy temp = new Enemy(typeLight, false, 100 + (20 * i), 150 , enemyProjectile);
+					enemies.add(temp);
+				} if(i < 14 || i == 21) {
+					Enemy temp = new Enemy(typeLight, false, 100 + (20 * i), 200 , enemyProjectile);
+					enemies.add(temp);
 				}
 			}
+			shields.add(tempGameShield1);
+			shields.add(tempGameShield2);
 		}
 	}
 	
