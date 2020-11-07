@@ -14,8 +14,16 @@ public class Gameplay extends GraphicsProgram {
 	private int enemyMovementSpeed = 0;
 	private GImage mainMenuScreen;
 	private GRect singlePlayerButton;
+	private GRect coopButton;
+	private GRect scoreBoardButton;
+	private GRect controlButton;
+	private GRect exitButton;
 	private boolean singlePlayerButtonPressed = false;
-	private Timer mainTimer = new Timer(1000, this);
+	private boolean coopButtonPressed = false;
+	private boolean scoreBoardButtonPressed = false;
+	private boolean controlButtonPressed = false;
+	
+	private Timer mainMenuTimer = new Timer(1000, this);
 	
 	
 	public void init() {
@@ -25,15 +33,37 @@ public class Gameplay extends GraphicsProgram {
 	//**** Input Listeners ****
 	public void mousePressed(MouseEvent e) {
 		System.out.println("X Click: " + e.getX() + " Y Click: " + e.getY());
+		//Single Player Button
 		if(e.getX() < singlePlayerButton.getX() + singlePlayerButton.getWidth() && e.getX() >= singlePlayerButton.getX() 
 				&& e.getY() < singlePlayerButton.getY() + singlePlayerButton.getHeight() &&
 				e.getY() >= singlePlayerButton.getY()) {
-			System.out.println("Works!");
 			singlePlayerButtonPressed = true;
 		}
-		System.out.println(singlePlayerButton.getX() + singlePlayerButton.getWidth());
-		System.out.println(singlePlayerButton.getY() + singlePlayerButton.getHeight());
-		
+		//Coop Player Button
+		if(e.getX() < coopButton.getX() + coopButton.getWidth() && e.getX() >=coopButton.getX() 
+				&& e.getY() < coopButton.getY() + coopButton.getHeight() &&
+				e.getY() >= coopButton.getY()) {
+			coopButtonPressed = true;
+		}
+		//score board button
+		if(e.getX() < scoreBoardButton.getX() + scoreBoardButton.getWidth() && e.getX() >= scoreBoardButton.getX() 
+				&& e.getY() < scoreBoardButton.getY() + scoreBoardButton.getHeight() &&
+				e.getY() >= scoreBoardButton.getY()) {
+			scoreBoardButtonPressed = true;
+		}
+		//Control button
+		if(e.getX() < controlButton.getX() + controlButton.getWidth() && e.getX() >= controlButton.getX() 
+				&& e.getY() < controlButton.getY() + controlButton.getHeight() &&
+				e.getY() >= controlButton.getY()) {
+			controlButtonPressed = true;
+		}
+		//Exit button
+		if(e.getX() < exitButton.getX() + exitButton.getWidth() && e.getX() >= exitButton.getX() 
+				&& e.getY() < exitButton.getY() + exitButton.getHeight() &&
+				e.getY() >= exitButton.getY()) {
+			System.out.println("Exiting game...");
+			System.exit(0);
+		}
 		
 		return;
 	}
@@ -51,25 +81,51 @@ public class Gameplay extends GraphicsProgram {
 	}	
 	
 	public void actionPerformed(ActionEvent e) {
-		if(singlePlayerButtonPressed) {
-			singlePlayerMode();
-			mainTimer.stop();
-		}
+		//Main menu button click recognition
+		if (mainMenuTimer.isRunning()) {
+			if(singlePlayerButtonPressed) {
+				singlePlayerMode();
+				mainMenuTimer.stop();
+			}
+			if(coopButtonPressed) {
+				coopMode();
+				mainMenuTimer.stop();
+			}
+			if(scoreBoardButtonPressed) {
+				displayScoreBoard();
+				mainMenuTimer.stop();
+			}
+			if(controlButtonPressed) {
+				displayControlScreen();
+				mainMenuTimer.stop();
+			}
+			
+		}		
 		
 	}
 	
 	
 	public void run() { // Main Function
 		addMouseListeners();
-		mainTimer.start();
+		mainMenuScreen = new GImage("officialMainMenu.png");
+		singlePlayerButton = new GRect(500, 160, 270, 50);
+		coopButton = new GRect(880, 160, 180, 50);
+		scoreBoardButton = new GRect(500, 235, 270, 50);
+		controlButton = new GRect(880, 235, 200, 50);
+		exitButton = new GRect(500, 310, 120, 50);
 		displayMenu();
 
 	}
+	
 	public void displayMenu() { //displays menu screen here
-		mainMenuScreen = new GImage("officialMainMenu.png");
 		add(mainMenuScreen);
-		singlePlayerButton = new GRect(530, 160, 230, 50);
 		add(singlePlayerButton);
+		add(coopButton);
+		add(scoreBoardButton);
+		add(controlButton);
+		add(exitButton);
+		
+		mainMenuTimer.start();
 		
 		//Tank Size Reference
 //		GRect rectangle = new GRect(200, 200, 75, 75);
@@ -88,6 +144,26 @@ public class Gameplay extends GraphicsProgram {
 		if(endLevel) {
 			displayMenu();
 		}
+	}
+	
+	public void pauseGame() { //Displays a screen when game is paused
+		
+	}
+	
+	public void displayScoreBoard( ) { //Displays the scoreboard
+		System.out.println("Scoreboard entered.");
+		removeAll(); //Removes everything from screen.
+	}
+	
+	public void coopMode() {
+		System.out.println("Coop player mode entered.");
+		removeAll(); //Removes everything from screen.
+	}
+	
+	public void displayControlScreen() {
+		System.out.println("controlScreen.");
+		removeAll(); //Removes everything from screen.
+		
 	}
 	
 	public void userWin() { //displays the screen when the user wins
