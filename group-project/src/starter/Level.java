@@ -41,19 +41,58 @@ public class Level {
 			setNumberOfEnemiesLight(21);
 			for(int i = 0; i == 21; i++) {
 				if(i < 6) { //layer one
-					Enemy temp = new Enemy(typeLight, false, 100 + (20 * i), 100 , enemyProjectile);
-					enemies.add(temp);
+					Enemy light1 = new Enemy(typeLight, false, 100 + (20 * i), 100 , enemyProjectile);
+					enemies.add(light1);
 				} if(i > 6 && i < 14) {
-					Enemy temp = new Enemy(typeLight, false, 100 + (20 * i), 150 , enemyProjectile);
-					enemies.add(temp);
+					Enemy light2 = new Enemy(typeLight, false, 100 + (20 * i), 150 , enemyProjectile);
+					enemies.add(light2);
 				} if(i < 14 || i == 21) {
-					Enemy temp = new Enemy(typeLight, false, 100 + (20 * i), 200 , enemyProjectile);
-					enemies.add(temp);
+					Enemy light3 = new Enemy(typeLight, false, 100 + (20 * i), 200 , enemyProjectile);
+					enemies.add(light3);
 				}
 			}
 			shields.add(tempGameShield1);
 			shields.add(tempGameShield2);
 		}
+		if(levelNumber == 2) {
+			setNumberOfEnemiesLight(14);
+			setNumberOfEnemiesMedium(7);
+			for(int i = 0; i == 21; i++) {
+				if(i < 6) { //layer one
+					Enemy medium = new Enemy(typeMedium, false, 100 + (20 * i), 100 , enemyProjectile);
+					enemies.add(medium);
+				} if(i > 6 && i < 14) {
+					Enemy light1 = new Enemy(typeLight, false, 100 + (20 * i), 150 , enemyProjectile);
+					enemies.add(light1);
+				} if(i < 14 || i == 21) {
+					Enemy light2 = new Enemy(typeLight, false, 100 + (20 * i), 200 , enemyProjectile);
+					enemies.add(light2);
+				}
+			}
+			shields.add(tempGameShield1);
+			shields.add(tempGameShield2);
+		}
+		
+		if(levelNumber == 3) {
+			setNumberOfEnemiesLight(7);
+			setNumberOfEnemiesMedium(7);
+			setNumberOfEnemiesHeavy(7);
+			for(int i = 0; i == 21; i++) {
+				if(i < 6) { //layer one
+					Enemy heavy = new Enemy(typeHeavy, false, 100 + (20 * i), 100 , enemyProjectile);
+					enemies.add(heavy);
+				} if(i > 6 && i < 14) {
+					Enemy medium = new Enemy(typeMedium, false, 100 + (20 * i), 150 , enemyProjectile);
+					enemies.add(medium);
+				} if(i < 14 || i == 21) {
+					Enemy light = new Enemy(typeLight, false, 100 + (20 * i), 200 , enemyProjectile);
+					enemies.add(light);
+				}
+			}
+			shields.add(tempGameShield1);
+			shields.add(tempGameShield2);
+		}
+		
 	}
 	
 	public void createEnemy() {
