@@ -12,19 +12,28 @@ public class Gameplay extends GraphicsProgram {
 	public static final int PROGRAM_HEIGHT = 900;
 	private int userMovementSpeed = 0;
 	private int enemyMovementSpeed = 0;
-	private GImage mainMenuScreen;
-	private GRect singlePlayerButton;
-	private GRect coopButton;
-	private GRect scoreBoardButton;
-	private GRect controlButton;
-	private GRect exitButton;
+	private GImage mainMenuScreen = new GImage("officialMainMenu.png");
+	private GImage pauseScreen = new GImage("pauseScreen.png");
+	
+	private GRect singlePlayerButton = new GRect(500, 160, 270, 50);
+	private GRect coopButton = new GRect(880, 160, 180, 50);
+	private GRect scoreBoardButton = new GRect(500, 235, 270, 50);
+	private GRect controlButton = new GRect(880, 235, 200, 50);
+	private GRect exitButton = new GRect(500, 310, 120, 50);
+	private GRect returnMainMenuButton = new GRect(480,215,280,50);
+	private GRect resumeButton = new GRect(860, 215, 220, 50);
+	
 	private boolean singlePlayerButtonPressed = false;
 	private boolean coopButtonPressed = false;
 	private boolean scoreBoardButtonPressed = false;
 	private boolean controlButtonPressed = false;
+	private boolean pauseButtonPressed = false;
+	private boolean returnMainMenuPressed = false;
+	private boolean resumeButtonPressed = false;
+	
 	
 	private Timer mainMenuTimer = new Timer(1000, this);
-	
+	private Timer singlePlayerTimer = new Timer(1000, this);
 	
 	public void init() {
 		setSize(PROGRAM_WIDTH, PROGRAM_HEIGHT);
@@ -64,6 +73,18 @@ public class Gameplay extends GraphicsProgram {
 			System.out.println("Exiting game...");
 			System.exit(0);
 		}
+		//pause screen return to main menu button
+		if(e.getX() < returnMainMenuButton.getX() + returnMainMenuButton.getWidth() && e.getX() >= returnMainMenuButton.getX() 
+				&& e.getY() < returnMainMenuButton.getY() + returnMainMenuButton.getHeight() &&
+				e.getY() >= returnMainMenuButton.getY()) {
+			returnMainMenuPressed = true;
+		}
+		//pause screen resume game button
+		if(e.getX() < resumeButton.getX() + resumeButton.getWidth() && e.getX() >= resumeButton.getX() 
+				&& e.getY() < resumeButton.getY() + resumeButton.getHeight() &&
+				e.getY() >= resumeButton.getY()) {
+			resumeButtonPressed = true;
+		}
 		
 		return;
 	}
@@ -72,12 +93,11 @@ public class Gameplay extends GraphicsProgram {
 	}
 	
 	public void keyPressed(KeyEvent e) {
-//		char i = e.getKeyChar();
-//		System.out.println(i);
+		
 	}
 	
 	public void keyReleased(KeyEvent e) {
-		
+
 	}	
 	
 	public void actionPerformed(ActionEvent e) {
@@ -101,23 +121,38 @@ public class Gameplay extends GraphicsProgram {
 			}
 			
 		}		
+		if(singlePlayerTimer.isRunning()) {
+			if(pauseButtonPressed) {
+				pauseGame();
+			}
+			if(returnMainMenuPressed) {
+				displayMenu();
+				singlePlayerTimer.stop();
+			}
+			if(resumeButtonPressed) {
+				//Temporary here, later we must figure out how to resume a game properly.
+				singlePlayerMode();
+				singlePlayerTimer.stop();
+			}
+			
+		}
 		
 	}
 	
 	
 	public void run() { // Main Function
 		addMouseListeners();
-		mainMenuScreen = new GImage("officialMainMenu.png");
-		singlePlayerButton = new GRect(500, 160, 270, 50);
-		coopButton = new GRect(880, 160, 180, 50);
-		scoreBoardButton = new GRect(500, 235, 270, 50);
-		controlButton = new GRect(880, 235, 200, 50);
-		exitButton = new GRect(500, 310, 120, 50);
-		displayMenu();
-
+		singlePlayerTimer.start();
+		//Pausegame is here for testing purposes
+		pauseGame();
+		//displayMenu();
+		
+		
 	}
 	
 	public void displayMenu() { //displays menu screen here
+		System.out.println("Main menu entered.");
+		mainMenuScreen.setSize(1600, 900);
 		add(mainMenuScreen);
 		add(singlePlayerButton);
 		add(coopButton);
@@ -138,16 +173,22 @@ public class Gameplay extends GraphicsProgram {
 		System.out.println("Single player mode entered.");
 		removeAll(); //Removes everything from screen.
 		
-		
 		//If level is done or player decides to leave
 		boolean endLevel = false;
 		if(endLevel) {
+			singlePlayerTimer.stop();
 			displayMenu();
 		}
 	}
 	
 	public void pauseGame() { //Displays a screen when game is paused
-		
+		System.out.println("Game Paused");
+		removeAll();
+		pauseScreen.setSize(1600, 900);
+		add(pauseScreen);
+		add(returnMainMenuButton);
+		add(resumeButton);
+
 	}
 	
 	public void displayScoreBoard( ) { //Displays the scoreboard
@@ -158,6 +199,7 @@ public class Gameplay extends GraphicsProgram {
 	public void coopMode() {
 		System.out.println("Coop player mode entered.");
 		removeAll(); //Removes everything from screen.
+		return;
 	}
 	
 	public void displayControlScreen() {
