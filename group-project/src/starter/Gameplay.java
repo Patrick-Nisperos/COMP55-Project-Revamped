@@ -28,6 +28,9 @@ public class Gameplay extends GraphicsProgram {
 	
 	public void init() {
 		setSize(PROGRAM_WIDTH, PROGRAM_HEIGHT);
+		Level levelOne = new Level(2);
+		levelOne.initLevel();
+		levelOne.printArrayList();
 	}
 	
 	//**** Input Listeners ****
