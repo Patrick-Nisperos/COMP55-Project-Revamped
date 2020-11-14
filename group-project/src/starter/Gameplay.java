@@ -8,7 +8,7 @@ import java.awt.event.*;
 import javax.swing.Timer;
 import java.util.ArrayList;
 
-public class Gameplay extends GraphicsProgram implements KeyListener{
+public class Gameplay extends GraphicsProgram implements ActionListener,KeyListener{
 	public static final int PROGRAM_WIDTH = 1600;
 	public static final int PROGRAM_HEIGHT = 900;
 	private int userMovementSpeed = 0;
@@ -39,6 +39,8 @@ public class Gameplay extends GraphicsProgram implements KeyListener{
 	
 	public void init() {
 		setSize(PROGRAM_WIDTH, PROGRAM_HEIGHT);
+		addKeyListeners();
+		addMouseListeners();
 	}
 	
 	//**** Input Listeners ****
@@ -95,10 +97,9 @@ public class Gameplay extends GraphicsProgram implements KeyListener{
 	}
 	
 	public void keyPressed(KeyEvent e) {
-		  switch(e.getKeyCode()) {
-		  //27 = "esc" key
-		  case 27: pauseGame();
-		   break;
+		  if (e.getKeyCode() == 27) {
+			  System.out.println("You pressed *esc* ");
+			  pauseGame();
 		  }
 	}
 	
@@ -148,7 +149,6 @@ public class Gameplay extends GraphicsProgram implements KeyListener{
 	
 	
 	public void run() { // Main Function
-		addMouseListeners();
 		singlePlayerTimer.start();
 		//Pausegame is here for testing purposes
 		//pauseGame();
