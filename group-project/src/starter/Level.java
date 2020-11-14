@@ -193,4 +193,14 @@ public class Level {
 	public void placeShield() {
 		
 	}
+	public void clearEnemyList() {
+		if (enemies.size() != 0) {
+			for (Enemy temp : enemies) {
+				enemies.clear();
+			}
+		}
+		else {
+			System.out.println("Enemies Arraylist already clear");
+		}
+	}
 }
