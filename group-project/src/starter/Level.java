@@ -174,7 +174,7 @@ public class Level {
 			shields.add(tempGameShield2);
 		}
 	}
-	public void printArrayList() {
+	public void printArrayList() { //Prints the arrayList 
 		System.out.println("size: " + enemies.size());
 		System.out.println("size of Shields: " + shields.size());
 		for(Enemy temp : enemies) {
@@ -182,7 +182,7 @@ public class Level {
 		}
 	}
 	
-	public ArrayList<GRect> createEnemyRect() {
+	public ArrayList<GRect> createEnemyRect() { //Creates new GRects to be called in Gameplay.java
 		GRect tempRec;
 		for(Enemy temp : enemies) {
 			tempRec = new GRect(temp.getCordinateX(), temp.getCordinateY(), temp.getTypeOfEnemy().getEnemyHitbox().getWidth(), temp.getTypeOfEnemy().getEnemyHitbox().getHeight());
