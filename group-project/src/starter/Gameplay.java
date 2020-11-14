@@ -6,6 +6,7 @@ import acm.util.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.Timer;
+import java.util.ArrayList;
 
 public class Gameplay extends GraphicsProgram implements KeyListener{
 	public static final int PROGRAM_WIDTH = 1600;
@@ -33,13 +34,11 @@ public class Gameplay extends GraphicsProgram implements KeyListener{
 	
 	
 	private Timer mainMenuTimer = new Timer(1000, this);
+	ArrayList<GRect> enemyRectangles = new ArrayList<GRect>();
 	private Timer singlePlayerTimer = new Timer(1000, this);
 	
 	public void init() {
 		setSize(PROGRAM_WIDTH, PROGRAM_HEIGHT);
-		Level levelOne = new Level(2);
-		levelOne.initLevel();
-		levelOne.printArrayList();
 	}
 	
 	//**** Input Listeners ****
@@ -152,8 +151,8 @@ public class Gameplay extends GraphicsProgram implements KeyListener{
 		addMouseListeners();
 		singlePlayerTimer.start();
 		//Pausegame is here for testing purposes
-		pauseGame();
-		//displayMenu();
+		//pauseGame();
+		displayMenu();
 		
 		
 	}
@@ -180,6 +179,12 @@ public class Gameplay extends GraphicsProgram implements KeyListener{
 	public void singlePlayerMode() {
 		System.out.println("Single player mode entered.");
 		removeAll(); //Removes everything from screen.
+		Level levelOne = new Level(2);
+		levelOne.initLevel();
+		levelOne.printArrayList();
+		enemyRectangles = levelOne.createEnemyRect();
+		pasteEnemies();
+		System.out.println("Size of GRect Array: " + enemyRectangles.size());
 		
 		//If level is done or player decides to leave
 		boolean endLevel = false;
@@ -249,4 +254,9 @@ public class Gameplay extends GraphicsProgram implements KeyListener{
 		
 	}
 	
+	public void pasteEnemies() {
+		for(GRect temp : enemyRectangles) {
+			add(temp);
+		}
+	}
 }
