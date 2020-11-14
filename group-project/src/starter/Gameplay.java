@@ -36,7 +36,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	
 	private Timer mainMenuTimer = new Timer(1000, this);
 	ArrayList<GRect> enemyRectangles = new ArrayList<GRect>();
-	private Timer singlePlayerTimer = new Timer(1000, this);
+	private Timer pauseTimer = new Timer(1000, this);
 	
 	public void init() {
 		setSize(PROGRAM_WIDTH, PROGRAM_HEIGHT);
@@ -47,47 +47,52 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	//**** Input Listeners ****
 	public void mousePressed(MouseEvent e) {
 		System.out.println("X Click: " + e.getX() + " Y Click: " + e.getY());
-		//Single Player Button
-		if(e.getX() < singlePlayerButton.getX() + singlePlayerButton.getWidth() && e.getX() >= singlePlayerButton.getX() 
-				&& e.getY() < singlePlayerButton.getY() + singlePlayerButton.getHeight() &&
-				e.getY() >= singlePlayerButton.getY()) {
-			singlePlayerButtonPressed = true;
+		if(mainMenuTimer.isRunning()) {
+			//Single Player Button
+			if(e.getX() < singlePlayerButton.getX() + singlePlayerButton.getWidth() && e.getX() >= singlePlayerButton.getX() 
+					&& e.getY() < singlePlayerButton.getY() + singlePlayerButton.getHeight() &&
+					e.getY() >= singlePlayerButton.getY()) {
+				singlePlayerButtonPressed = true;
+			}
+			//Coop Player Button
+			if(e.getX() < coopButton.getX() + coopButton.getWidth() && e.getX() >=coopButton.getX() 
+					&& e.getY() < coopButton.getY() + coopButton.getHeight() &&
+					e.getY() >= coopButton.getY()) {
+				coopButtonPressed = true;
+			}
+			//score board button
+			if(e.getX() < scoreBoardButton.getX() + scoreBoardButton.getWidth() && e.getX() >= scoreBoardButton.getX() 
+					&& e.getY() < scoreBoardButton.getY() + scoreBoardButton.getHeight() &&
+					e.getY() >= scoreBoardButton.getY()) {
+				scoreBoardButtonPressed = true;
+			}
+			//Control button
+			if(e.getX() < controlButton.getX() + controlButton.getWidth() && e.getX() >= controlButton.getX() 
+					&& e.getY() < controlButton.getY() + controlButton.getHeight() &&
+					e.getY() >= controlButton.getY()) {
+				controlButtonPressed = true;
+			}
+			//Exit button
+			if(e.getX() < exitButton.getX() + exitButton.getWidth() && e.getX() >= exitButton.getX() 
+					&& e.getY() < exitButton.getY() + exitButton.getHeight() &&
+					e.getY() >= exitButton.getY()) {
+				exitButtonPressed = true;
+			}
 		}
-		//Coop Player Button
-		if(e.getX() < coopButton.getX() + coopButton.getWidth() && e.getX() >=coopButton.getX() 
-				&& e.getY() < coopButton.getY() + coopButton.getHeight() &&
-				e.getY() >= coopButton.getY()) {
-			coopButtonPressed = true;
-		}
-		//score board button
-		if(e.getX() < scoreBoardButton.getX() + scoreBoardButton.getWidth() && e.getX() >= scoreBoardButton.getX() 
-				&& e.getY() < scoreBoardButton.getY() + scoreBoardButton.getHeight() &&
-				e.getY() >= scoreBoardButton.getY()) {
-			scoreBoardButtonPressed = true;
-		}
-		//Control button
-		if(e.getX() < controlButton.getX() + controlButton.getWidth() && e.getX() >= controlButton.getX() 
-				&& e.getY() < controlButton.getY() + controlButton.getHeight() &&
-				e.getY() >= controlButton.getY()) {
-			controlButtonPressed = true;
-		}
-		//Exit button
-		if(e.getX() < exitButton.getX() + exitButton.getWidth() && e.getX() >= exitButton.getX() 
-				&& e.getY() < exitButton.getY() + exitButton.getHeight() &&
-				e.getY() >= exitButton.getY()) {
-			exitButtonPressed = true;
-		}
-		//pause screen return to main menu button
-		if(e.getX() < returnMainMenuButton.getX() + returnMainMenuButton.getWidth() && e.getX() >= returnMainMenuButton.getX() 
-				&& e.getY() < returnMainMenuButton.getY() + returnMainMenuButton.getHeight() &&
-				e.getY() >= returnMainMenuButton.getY()) {
-			returnMainMenuPressed = true;
-		}
-		//pause screen resume game button
-		if(e.getX() < resumeButton.getX() + resumeButton.getWidth() && e.getX() >= resumeButton.getX() 
-				&& e.getY() < resumeButton.getY() + resumeButton.getHeight() &&
-				e.getY() >= resumeButton.getY()) {
-			resumeButtonPressed = true;
+
+		if(pauseTimer.isRunning()) {
+			//pause screen return to main menu button
+			if(e.getX() < returnMainMenuButton.getX() + returnMainMenuButton.getWidth() && e.getX() >= returnMainMenuButton.getX() 
+					&& e.getY() < returnMainMenuButton.getY() + returnMainMenuButton.getHeight() &&
+					e.getY() >= returnMainMenuButton.getY()) {
+				returnMainMenuPressed = true;
+			}
+			//pause screen resume game button
+			if(e.getX() < resumeButton.getX() + resumeButton.getWidth() && e.getX() >= resumeButton.getX() 
+					&& e.getY() < resumeButton.getY() + resumeButton.getHeight() &&
+					e.getY() >= resumeButton.getY()) {
+				resumeButtonPressed = true;
+			}
 		}
 		
 		return;
@@ -114,21 +119,25 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	
 	public void actionPerformed(ActionEvent e) {
 		//Main menu button click recognition
-		if (mainMenuTimer.isRunning()) {
+		if(mainMenuTimer.isRunning()) {
 			if(singlePlayerButtonPressed) {
 				mainMenuTimer.stop();
+				singlePlayerButtonPressed = false;
 				singlePlayerMode();
 			}
 			if(coopButtonPressed) {
 				mainMenuTimer.stop();
+				coopButtonPressed = false;
 				coopMode();
 			}
 			if(scoreBoardButtonPressed) {
 				mainMenuTimer.stop();
+				scoreBoardButtonPressed = false;
 				displayScoreBoard();
 			}
 			if(controlButtonPressed) {
 				mainMenuTimer.stop();
+				controlButtonPressed = false;
 				displayControlScreen();
 			}
 			if(exitButtonPressed) {
@@ -137,13 +146,14 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			}
 	
 		}		
-		if(singlePlayerTimer.isRunning()) {
+		if(pauseTimer.isRunning()) {
 			if(returnMainMenuPressed) {
-				singlePlayerTimer.stop();
+				pauseTimer.stop();
+				returnMainMenuPressed = false;
 				displayMenu();
 			}
 			if(resumeButtonPressed) {
-				singlePlayerTimer.stop();
+				pauseTimer.stop();
 				//Temporary here, later we must figure out how to resume a game properly.
 				singlePlayerMode();
 
@@ -155,8 +165,6 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	
 	
 	public void run() { // Main Function
-		//Pausegame is here for testing purposes
-		//pauseGame();
 		displayMenu();
 		
 		
@@ -192,15 +200,15 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		System.out.println("Size of GRect Array: " + enemyRectangles.size());
 		
 		//If level is done or player decides to leave
-		boolean endLevel = false;
-		if(endLevel) {
-			singlePlayerTimer.stop();
-			displayMenu();
-		}
+//		boolean endLevel = false;
+//		if(endLevel) {
+//			singlePlayerTimer.stop();
+//			displayMenu();
+//		}
 	}
 	
 	public void pauseGame() { //Displays a screen when game is paused
-		singlePlayerTimer.start();
+		pauseTimer.start();
 		System.out.println("Game Paused");
 		removeAll();
 		pauseScreen.setSize(1600, 900);
