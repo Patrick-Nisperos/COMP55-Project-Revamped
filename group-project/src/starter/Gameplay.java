@@ -31,6 +31,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private boolean pauseButtonPressed = false;
 	private boolean returnMainMenuPressed = false;
 	private boolean resumeButtonPressed = false;
+	private boolean exitButtonPressed = false;
 	
 	
 	private Timer mainMenuTimer = new Timer(1000, this);
@@ -45,6 +46,10 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	
 	//**** Input Listeners ****
 	public void mousePressed(MouseEvent e) {
+		
+	}
+	
+	public void mouseReleased(MouseEvent e) {
 		System.out.println("X Click: " + e.getX() + " Y Click: " + e.getY());
 		//Single Player Button
 		if(e.getX() < singlePlayerButton.getX() + singlePlayerButton.getWidth() && e.getX() >= singlePlayerButton.getX() 
@@ -74,8 +79,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		if(e.getX() < exitButton.getX() + exitButton.getWidth() && e.getX() >= exitButton.getX() 
 				&& e.getY() < exitButton.getY() + exitButton.getHeight() &&
 				e.getY() >= exitButton.getY()) {
-			System.out.println("Exiting game...");
-			System.exit(0);
+			exitButtonPressed = true;
 		}
 		//pause screen return to main menu button
 		if(e.getX() < returnMainMenuButton.getX() + returnMainMenuButton.getWidth() && e.getX() >= returnMainMenuButton.getX() 
@@ -92,6 +96,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		
 		return;
 	}
+	
 	public void keyTypes(KeyEvent e) {
 		
 	}
@@ -126,12 +131,13 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 				mainMenuTimer.stop();
 				displayControlScreen();
 			}
-			
+			if(exitButtonPressed) {
+				System.out.println("Exiting game...");
+				System.exit(0);
+			}
+	
 		}		
 		if(singlePlayerTimer.isRunning()) {
-			if(pauseButtonPressed) {
-				pauseGame();
-			}
 			if(returnMainMenuPressed) {
 				singlePlayerTimer.stop();
 				displayMenu();
@@ -149,7 +155,6 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	
 	
 	public void run() { // Main Function
-		singlePlayerTimer.start();
 		//Pausegame is here for testing purposes
 		//pauseGame();
 		displayMenu();
@@ -195,6 +200,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	}
 	
 	public void pauseGame() { //Displays a screen when game is paused
+		singlePlayerTimer.start();
 		System.out.println("Game Paused");
 		removeAll();
 		pauseScreen.setSize(1600, 900);
