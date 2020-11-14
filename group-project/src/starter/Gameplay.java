@@ -8,7 +8,7 @@ import java.awt.event.*;
 import javax.swing.Timer;
 import java.util.ArrayList;
 
-public class Gameplay extends GraphicsProgram {
+public class Gameplay extends GraphicsProgram implements ActionListener,KeyListener{
 	public static final int PROGRAM_WIDTH = 1600;
 	public static final int PROGRAM_HEIGHT = 900;
 	private int userMovementSpeed = 0;
@@ -39,6 +39,8 @@ public class Gameplay extends GraphicsProgram {
 	
 	public void init() {
 		setSize(PROGRAM_WIDTH, PROGRAM_HEIGHT);
+		addKeyListeners();
+		addMouseListeners();
 	}
 	
 	//**** Input Listeners ****
@@ -95,31 +97,34 @@ public class Gameplay extends GraphicsProgram {
 	}
 	
 	public void keyPressed(KeyEvent e) {
-		
+		  if (e.getKeyCode() == 27) {
+			  System.out.println("You pressed *esc* ");
+			  pauseGame();
+		  }
 	}
 	
 	public void keyReleased(KeyEvent e) {
-
+		  System.out.println("You released key code: " + e.getKeyCode());
 	}	
 	
 	public void actionPerformed(ActionEvent e) {
 		//Main menu button click recognition
 		if (mainMenuTimer.isRunning()) {
 			if(singlePlayerButtonPressed) {
-				singlePlayerMode();
 				mainMenuTimer.stop();
+				singlePlayerMode();
 			}
 			if(coopButtonPressed) {
-				coopMode();
 				mainMenuTimer.stop();
+				coopMode();
 			}
 			if(scoreBoardButtonPressed) {
-				displayScoreBoard();
 				mainMenuTimer.stop();
+				displayScoreBoard();
 			}
 			if(controlButtonPressed) {
-				displayControlScreen();
 				mainMenuTimer.stop();
+				displayControlScreen();
 			}
 			
 		}		
@@ -128,13 +133,14 @@ public class Gameplay extends GraphicsProgram {
 				pauseGame();
 			}
 			if(returnMainMenuPressed) {
-				displayMenu();
 				singlePlayerTimer.stop();
+				displayMenu();
 			}
 			if(resumeButtonPressed) {
+				singlePlayerTimer.stop();
 				//Temporary here, later we must figure out how to resume a game properly.
 				singlePlayerMode();
-				singlePlayerTimer.stop();
+
 			}
 			
 		}
@@ -143,7 +149,6 @@ public class Gameplay extends GraphicsProgram {
 	
 	
 	public void run() { // Main Function
-		addMouseListeners();
 		singlePlayerTimer.start();
 		//Pausegame is here for testing purposes
 		//pauseGame();
@@ -154,7 +159,7 @@ public class Gameplay extends GraphicsProgram {
 	
 	public void displayMenu() { //displays menu screen here
 		System.out.println("Main menu entered.");
-		mainMenuScreen.setSize(1600, 900);
+		removeAll();
 		add(mainMenuScreen);
 		add(singlePlayerButton);
 		add(coopButton);
@@ -199,7 +204,7 @@ public class Gameplay extends GraphicsProgram {
 
 	}
 	
-	public void displayScoreBoard( ) { //Displays the scoreboard
+	public void displayScoreBoard() { //Displays the scoreboard
 		System.out.println("Scoreboard entered.");
 		removeAll(); //Removes everything from screen.
 	}
