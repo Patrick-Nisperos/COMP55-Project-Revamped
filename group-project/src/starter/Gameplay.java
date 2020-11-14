@@ -46,10 +46,6 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	
 	//**** Input Listeners ****
 	public void mousePressed(MouseEvent e) {
-		
-	}
-	
-	public void mouseReleased(MouseEvent e) {
 		System.out.println("X Click: " + e.getX() + " Y Click: " + e.getY());
 		//Single Player Button
 		if(e.getX() < singlePlayerButton.getX() + singlePlayerButton.getWidth() && e.getX() >= singlePlayerButton.getX() 
@@ -95,6 +91,10 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		}
 		
 		return;
+	}
+	
+	public void mouseReleased(KeyEvent e) {
+		
 	}
 	
 	public void keyTypes(KeyEvent e) {
