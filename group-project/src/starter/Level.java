@@ -195,12 +195,18 @@ public class Level {
 	}
 	public void clearEnemyList() {
 		if (enemies.size() != 0) {
-			for (Enemy temp : enemies) {
-				enemies.clear();
-			}
+			enemies.clear();
 		}
 		else {
 			System.out.println("Enemies Arraylist already clear");
+		}
+	}
+	public void destroyEnemy(int coordX, int coordY) {
+		for (Enemy temp : enemies) {
+			if (coordX == temp.getCordinateX() && coordY == temp.getCordinateY()) {
+				Enemy tempEnemy = new Enemy(temp.getTypeOfEnemy(), temp.isDestroyed(), temp.getCordinateX(), temp.getCordinateY(), temp.getEnemyProjectile());
+				enemies.remove(tempEnemy);
+			}
 		}
 	}
 }
