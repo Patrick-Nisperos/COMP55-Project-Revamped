@@ -6,6 +6,7 @@ import acm.util.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.Timer;
+import java.util.ArrayList;
 
 public class Gameplay extends GraphicsProgram {
 	public static final int PROGRAM_WIDTH = 1600;
@@ -25,12 +26,10 @@ public class Gameplay extends GraphicsProgram {
 	
 	private Timer mainMenuTimer = new Timer(1000, this);
 	
+	ArrayList<GRect> enemyRectangles = new ArrayList<GRect>();
 	
 	public void init() {
 		setSize(PROGRAM_WIDTH, PROGRAM_HEIGHT);
-		Level levelOne = new Level(2);
-		levelOne.initLevel();
-		levelOne.printArrayList();
 	}
 	
 	//**** Input Listeners ****
@@ -140,6 +139,12 @@ public class Gameplay extends GraphicsProgram {
 	public void singlePlayerMode() {
 		System.out.println("Single player mode entered.");
 		removeAll(); //Removes everything from screen.
+		Level levelOne = new Level(2);
+		levelOne.initLevel();
+		levelOne.printArrayList();
+		enemyRectangles = levelOne.createEnemyRect();
+		pasteEnemies();
+		System.out.println("Size of GRect Array: " + enemyRectangles.size());
 		
 		
 		//If level is done or player decides to leave
@@ -202,4 +207,9 @@ public class Gameplay extends GraphicsProgram {
 		
 	}
 	
+	public void pasteEnemies() {
+		for(GRect temp : enemyRectangles) {
+			add(temp);
+		}
+	}
 }
