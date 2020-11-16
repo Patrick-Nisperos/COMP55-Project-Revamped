@@ -11,12 +11,13 @@ import java.util.ArrayList;
 public class Gameplay extends GraphicsProgram implements ActionListener,KeyListener{
 	public static final int PROGRAM_WIDTH = 1600;
 	public static final int PROGRAM_HEIGHT = 900;
-	private int userMovementSpeed = 0;
-	private int enemyMovementSpeed = 4;
+	
+	//List of Images of different screens
 	private GImage mainMenuScreen = new GImage("officialMainMenu.png");
 	private GImage pauseScreen = new GImage("pauseScreen.png");
 	private GImage controlScreen = new GImage("controlScreen.png");
 	
+	//List of Different buttons for different screens
 	private GRect singlePlayerButton = new GRect(500, 160, 270, 50);
 	private GRect coopButton = new GRect(880, 160, 180, 50);
 	private GRect scoreBoardButton = new GRect(500, 235, 270, 50);
@@ -26,7 +27,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private GRect resumeButton = new GRect(860, 215, 220, 50);
 	private GRect controlReturnMainMenuButton = new GRect(1240,780,280,50); //control screen return main menu button
 	
-	
+	//List of booleans for buttons
 	private boolean singlePlayerButtonPressed = false;
 	private boolean coopButtonPressed = false;
 	private boolean scoreBoardButtonPressed = false;
@@ -37,30 +38,27 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private boolean exitButtonPressed = false;
 	private boolean controlReturnMainMenuPressed = false;
 	
+	//List of different timers
 	private Timer mainMenuTimer = new Timer(1000, this);
 	private Timer pauseTimer = new Timer(1000, this);
 	private Timer singlePlayerTimer = new Timer(50, this);
-	
-	ArrayList<GRect> enemyRectangles = new ArrayList<GRect>();
-	ArrayList<GRect> playerShields = new ArrayList<GRect>();
 	private Timer controlScreenTimer = new Timer(1000, this);
 	private Timer gameTimer = new Timer(1000, this); //used to track if user is in game
 	
-	 private GImage tank;
-	    private  int tankXcord = 20;
-	    private  int tankYcord = 800 ;
-	    private final int SCREEN_WIDTH = 1600;
-	    private final int SCREEN_HEIGHT = 900;
-	    private int arrIndex = 0;
-	    private int speedX = 0; 
-	    private int speedY = 0;
-	    private int speedVal = 5;
-	    private int x = 0;
-	    private int y = 0;
-	    // below line is in case if we want to add different images to make it look animated
-	    private String[] pics = {"blue tank.png"}; 
-	    //private Timer t = new Timer(25, this);
-	    
+	//List of lists of shields and enemies and enemy movement
+	private ArrayList<GRect> enemyRectangles = new ArrayList<GRect>();
+	private ArrayList<GRect> playerShields = new ArrayList<GRect>();
+	private int enemyMovementSpeed = 4;
+	
+	//List of Single player tank movement variables and image
+	private GImage singlePlayerTank = new GImage("blue tank.png");
+	private int singlePlayerTankStartingXCoord = 800;
+	private int singlePlayerTankStartingYCoord = 800 ;
+	private int singlePlayerArrIndex = 0;
+	private int singlePlayerSpeedX = 6; 
+
+ // below line is in case if we want to add different images to make it look animated
+	private String[] pics = {"blue tank.png"}; 
 	    
 	public void init() {
 		setSize(PROGRAM_WIDTH, PROGRAM_HEIGHT);
@@ -131,79 +129,51 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		return;
 	}
 	
-	public void mouseReleased(KeyEvent e) {
-		
-	}
-	
-	public void keyTypes(KeyEvent e) {
-		
-	}
-	
+	//Key Input Listeners
 	public void keyPressed(KeyEvent e) {
 		if(gameTimer.isRunning()) {
 			if (e.getKeyCode() == 27) {
 				System.out.println("You pressed *esc* ");
+				singlePlayerTimer.start();
 				pauseGame();
 			}
-		
-			char moveKey = e.getKeyChar();
-	        int moveKeyCode = e.getKeyCode();
-	        
-	        if(singlePlayerTimer.isRunning()) {
-	        if(moveKey == 'd' || moveKeyCode==KeyEvent.VK_RIGHT){
-	        	speedX=speedVal;
-	        	speedY=0;
-	        		tank.move(speedX,0);
-	                tank.setImage(pics[arrIndex]);
-	                arrIndex++;
-	                if(arrIndex>=pics.length){
-	                    arrIndex = 0;
-	                }
-	            }
-	        else if(moveKey == 'a'|| moveKeyCode==KeyEvent.VK_LEFT) {
-	        	speedX=-speedVal;
-	        	speedY=0;
-	        	tank.move(-speedX,0);
-	               tank.setImage(pics[arrIndex]);
-	               arrIndex++;
-	               if(arrIndex>=pics.length){
-	                   arrIndex = 0;
-	               }
+		}
+		//Single Player Tank Movement and Fire
+	     if(singlePlayerTimer.isRunning()) {
+			int moveKeyCode = e.getKeyCode();
+	        if(moveKeyCode == 68){ //"d" right movement
+	        	if(singlePlayerTank.getX() < 1520) {// Line to ensure tank doesn't leave boundaries
+		        	singlePlayerTank.move(singlePlayerSpeedX,0);
+		        	singlePlayerTank.setImage(pics[singlePlayerArrIndex]);
+		        	singlePlayerArrIndex++;
+		            if(singlePlayerArrIndex>=pics.length){
+		               	singlePlayerArrIndex = 0;
+		            }
+	        	}
 	        }
-	        else if(moveKey == 'w'|| moveKeyCode==KeyEvent.VK_UP) {
-	        	speedX=0;
-	        	speedY=-speedVal;
-	        	tank.move(0,-speedY);
-	            tank.setImage(pics[arrIndex]);
-	            arrIndex++;
-	            if(arrIndex>=pics.length){
-	                arrIndex = 0;
-	            }
+	        if(moveKeyCode == 65) { //"a" left movement
+	        	if(singlePlayerTank.getX() > -10) { // Line to ensure tank doesn't leave boundaries
+		        	singlePlayerTank.move(-1 * singlePlayerSpeedX,0);
+		        	singlePlayerTank.setImage(pics[singlePlayerArrIndex]);
+		        	singlePlayerArrIndex++;
+		            if(singlePlayerArrIndex>=pics.length){
+		               singlePlayerArrIndex = 0;
+		            }
+	        	}
+	        }
+	        if(moveKeyCode == 87) { 
+	        	System.out.println("you pressed *w* fire projectile");
+	        }	      
 	     }
-	        else if(moveKey == 's'|| moveKeyCode==KeyEvent.VK_DOWN) {
-	        	speedX=0;
-	        	speedY=speedVal;
-	        	tank.move(0,speedY);
-	             tank.setImage(pics[arrIndex]);
-	             arrIndex++;
-	             if(arrIndex>=pics.length){
-	                 arrIndex = 0;
-	             }
-	      }
-	      
-		}
-		}
 	}
 	
 	public void keyReleased(KeyEvent e) {
-		  System.out.println("You released key code: " + e.getKeyCode());
-			speedX=0;
-	    	speedY=0;
+		System.out.println("You released key code: " + e.getKeyCode());      
 	}	
+	
 	
 	public void actionPerformed(ActionEvent e) {
 		//Main menu button click recognition
-		
 		if(mainMenuTimer.isRunning()) {
 			if(singlePlayerButtonPressed) {
 				mainMenuTimer.stop();
@@ -233,8 +203,10 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			}
 	
 		}		
+		//pause screen button recognition 
 		if(pauseTimer.isRunning()) {
 			if(pauseReturnMainMenuPressed) {
+				singlePlayerTimer.stop();
 				gameTimer.stop();
 				pauseTimer.stop();
 				pauseReturnMainMenuPressed = false;
@@ -242,6 +214,8 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			}
 			if(resumeButtonPressed) {
 				pauseTimer.stop();
+				singlePlayerTimer.stop();
+				gameTimer.stop();
 				//Temporary here, later we must figure out how to resume a game properly.
 				singlePlayerMode();
 
@@ -250,27 +224,8 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		}
 		if(singlePlayerTimer.isRunning()) {
 			enemyMovement();
-			if(x<0) {
-	    		speedX=0;
-	    		x=0;
-	    	}
-	    	if(x>SCREEN_WIDTH-90) {
-	    		speedX=0;
-	    		x=SCREEN_WIDTH-90;
-	    	}
-	    	if(y<0) {
-	    		speedY=0;
-	    		y=0;
-	    	}
-	    	if(y>SCREEN_HEIGHT-90) {
-	    		speedY=0;
-	    		y=SCREEN_HEIGHT-90;
-	    	}
-	    	x+=speedX;
-	    	y+=speedY;
-//	    	add(tank,x,y);
 		}
-		
+		//control screen button recognition
 		if(controlScreenTimer.isRunning()) {
 			if(controlReturnMainMenuPressed) {
 				gameTimer.stop();
@@ -285,12 +240,9 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	
 	public void run() { // Main Function
 		displayMenu();
-		
-		
 	}
 	
 	public void displayMenu() { //displays menu screen here
-		gameTimer.start();
 		System.out.println("Main menu entered.");
 		removeAll();
 		add(mainMenuScreen);
@@ -299,21 +251,20 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		add(scoreBoardButton);
 		add(controlButton);
 		add(exitButton);
-		
 		mainMenuTimer.start();
 		
-		//Tank Size Reference
-//		GRect rectangle = new GRect(200, 200, 75, 75);
-//		add(rectangle);
-//		GImage Tank = new GImage ("blue tank.png", 200, 200);
-//		add(Tank);
 	}
 	
 	public void singlePlayerMode() {
+		gameTimer.start();
 		singlePlayerTimer.start();
 		System.out.println("Single player mode entered.");
-		
 		removeAll(); //Removes everything from screen.
+		
+		//Level one initialize
+		GImage levelOneBackground = new GImage("desert top view.jpg");
+		levelOneBackground.setSize(1600,900);
+		add(levelOneBackground);
 		Level levelOne = new Level(2);
 		levelOne.initLevel();
 		levelOne.printArrayList();
@@ -322,24 +273,8 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		System.out.println("Size of GRect Array: " + enemyRectangles.size());
 		playerShields = levelOne.placeShield();
 		pasteShields();
-		
-		   //setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-	        tank = new GImage("blue tank.png");
-	        x=tankXcord;
-	        y=tankYcord;
-	        add(tank,x,y);
-	       // t.start();
-	        //addKeyListeners();
-	        setFocusable(true);
-	        setFocusTraversalKeysEnabled(false);
-	      //  addMouseListeners();
-		//add(tank,x,y);
-		//If level is done or player decides to leave
-//		boolean endLevel = false;
-//		if(endLevel) {
-//			singlePlayerTimer.stop();
-//			displayMenu();
-//		}
+	    add(singlePlayerTank,singlePlayerTankStartingXCoord,singlePlayerTankStartingYCoord);
+	    
 	}
 	
 	public void pauseGame() { //Displays a screen when game is paused
