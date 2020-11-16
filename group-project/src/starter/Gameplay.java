@@ -15,28 +15,34 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private int enemyMovementSpeed = 0;
 	private GImage mainMenuScreen = new GImage("officialMainMenu.png");
 	private GImage pauseScreen = new GImage("pauseScreen.png");
+	private GImage controlScreen = new GImage("controlScreen.png");
 	
 	private GRect singlePlayerButton = new GRect(500, 160, 270, 50);
 	private GRect coopButton = new GRect(880, 160, 180, 50);
 	private GRect scoreBoardButton = new GRect(500, 235, 270, 50);
 	private GRect controlButton = new GRect(880, 235, 200, 50);
 	private GRect exitButton = new GRect(500, 310, 120, 50);
-	private GRect returnMainMenuButton = new GRect(480,215,280,50);
+	private GRect pauseReturnMainMenuButton = new GRect(480,215,280,50); //pause screen return main menu button
 	private GRect resumeButton = new GRect(860, 215, 220, 50);
+	private GRect controlReturnMainMenuButton = new GRect(1240,780,280,50); //control screen return main menu button
+	
 	
 	private boolean singlePlayerButtonPressed = false;
 	private boolean coopButtonPressed = false;
 	private boolean scoreBoardButtonPressed = false;
 	private boolean controlButtonPressed = false;
 	private boolean pauseButtonPressed = false;
-	private boolean returnMainMenuPressed = false;
+	private boolean pauseReturnMainMenuPressed = false;
 	private boolean resumeButtonPressed = false;
 	private boolean exitButtonPressed = false;
+	private boolean controlReturnMainMenuPressed = false;
 	
 	
 	private Timer mainMenuTimer = new Timer(1000, this);
 	ArrayList<GRect> enemyRectangles = new ArrayList<GRect>();
 	private Timer pauseTimer = new Timer(1000, this);
+	private Timer controlScreenTimer = new Timer(1000, this);
+	private Timer gameTimer = new Timer(1000, this); //used to track if user is in game
 	
 	public void init() {
 		setSize(PROGRAM_WIDTH, PROGRAM_HEIGHT);
@@ -82,16 +88,25 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 
 		if(pauseTimer.isRunning()) {
 			//pause screen return to main menu button
-			if(e.getX() < returnMainMenuButton.getX() + returnMainMenuButton.getWidth() && e.getX() >= returnMainMenuButton.getX() 
-					&& e.getY() < returnMainMenuButton.getY() + returnMainMenuButton.getHeight() &&
-					e.getY() >= returnMainMenuButton.getY()) {
-				returnMainMenuPressed = true;
+			if(e.getX() < pauseReturnMainMenuButton.getX() + pauseReturnMainMenuButton.getWidth() && e.getX() >= pauseReturnMainMenuButton.getX() 
+					&& e.getY() < pauseReturnMainMenuButton.getY() + pauseReturnMainMenuButton.getHeight() &&
+					e.getY() >= pauseReturnMainMenuButton.getY()) {
+				pauseReturnMainMenuPressed = true;
 			}
 			//pause screen resume game button
 			if(e.getX() < resumeButton.getX() + resumeButton.getWidth() && e.getX() >= resumeButton.getX() 
 					&& e.getY() < resumeButton.getY() + resumeButton.getHeight() &&
 					e.getY() >= resumeButton.getY()) {
 				resumeButtonPressed = true;
+			}
+		}
+		
+		if(controlScreenTimer.isRunning()) {
+			//control screen returns to main menu button
+			if(e.getX() < controlReturnMainMenuButton.getX() + controlReturnMainMenuButton.getWidth() && e.getX() >= controlReturnMainMenuButton.getX() 
+					&& e.getY() < controlReturnMainMenuButton.getY() + controlReturnMainMenuButton.getHeight() &&
+					e.getY() >= controlReturnMainMenuButton.getY()) {
+				controlReturnMainMenuPressed = true;
 			}
 		}
 		
@@ -107,10 +122,12 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	}
 	
 	public void keyPressed(KeyEvent e) {
-		  if (e.getKeyCode() == 27) {
-			  System.out.println("You pressed *esc* ");
-			  pauseGame();
-		  }
+		if(gameTimer.isRunning()) {
+			if (e.getKeyCode() == 27) {
+				System.out.println("You pressed *esc* ");
+				pauseGame();
+			}
+		}
 	}
 	
 	public void keyReleased(KeyEvent e) {
@@ -131,11 +148,13 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 				coopMode();
 			}
 			if(scoreBoardButtonPressed) {
+				gameTimer.stop();
 				mainMenuTimer.stop();
 				scoreBoardButtonPressed = false;
 				displayScoreBoard();
 			}
 			if(controlButtonPressed) {
+				gameTimer.stop();
 				mainMenuTimer.stop();
 				controlButtonPressed = false;
 				displayControlScreen();
@@ -147,9 +166,10 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	
 		}		
 		if(pauseTimer.isRunning()) {
-			if(returnMainMenuPressed) {
+			if(pauseReturnMainMenuPressed) {
+				gameTimer.stop();
 				pauseTimer.stop();
-				returnMainMenuPressed = false;
+				pauseReturnMainMenuPressed = false;
 				displayMenu();
 			}
 			if(resumeButtonPressed) {
@@ -159,6 +179,14 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 
 			}
 			
+		}
+		if(controlScreenTimer.isRunning()) {
+			if(controlReturnMainMenuPressed) {
+				gameTimer.stop();
+				controlScreenTimer.stop();
+				controlReturnMainMenuPressed = false;
+				displayMenu();
+			}
 		}
 		
 	}
@@ -171,6 +199,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	}
 	
 	public void displayMenu() { //displays menu screen here
+		gameTimer.start();
 		System.out.println("Main menu entered.");
 		removeAll();
 		add(mainMenuScreen);
@@ -213,7 +242,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		removeAll();
 		pauseScreen.setSize(1600, 900);
 		add(pauseScreen);
-		add(returnMainMenuButton);
+		add(pauseReturnMainMenuButton);
 		add(resumeButton);
 
 	}
@@ -230,8 +259,12 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	}
 	
 	public void displayControlScreen() {
+		controlScreenTimer.start();
 		System.out.println("controlScreen.");
 		removeAll(); //Removes everything from screen.
+		controlScreen.setSize(1600,900);
+		add(controlScreen);
+		add(controlReturnMainMenuButton);
 		
 	}
 	
