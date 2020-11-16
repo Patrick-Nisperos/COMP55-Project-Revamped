@@ -37,6 +37,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private Timer mainMenuTimer = new Timer(1000, this);
 	ArrayList<GRect> enemyRectangles = new ArrayList<GRect>();
 	private Timer pauseTimer = new Timer(1000, this);
+	ArrayList<GRect> playerShields = new ArrayList<GRect>();
 	
 	public void init() {
 		setSize(PROGRAM_WIDTH, PROGRAM_HEIGHT);
@@ -198,6 +199,8 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		enemyRectangles = levelOne.createEnemyRect();
 		pasteEnemies();
 		System.out.println("Size of GRect Array: " + enemyRectangles.size());
+		playerShields = levelOne.placeShield();
+		pasteShields();
 		
 		//If level is done or player decides to leave
 //		boolean endLevel = false;
@@ -270,6 +273,11 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	
 	public void pasteEnemies() {
 		for(GRect temp : enemyRectangles) {
+			add(temp);
+		}
+	}
+	public void pasteShields() {
+		for(GRect temp : playerShields) {
 			add(temp);
 		}
 	}

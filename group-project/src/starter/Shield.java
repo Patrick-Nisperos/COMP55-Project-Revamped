@@ -6,13 +6,15 @@ public class Shield {
 	private int health;
 	private int coordX;
 	private int coordY;
+	private boolean isDestroyed;
 	
-	public Shield(int height, int width, int health, int coordX, int coordY) {
+	public Shield(int height, int width, int health, int coordX, int coordY, boolean isDestroyed) {
 		this.height = height;
 		this.health = health;
 		this.width = width;
 		this.coordX = coordX;
 		this.coordY = coordY;
+		this.isDestroyed = isDestroyed;
 	}
 	
 	public boolean isDestroyed() {
@@ -46,21 +48,19 @@ public class Shield {
 		this.health = health;
 	}
 
-	public int getCoordX() {
-		return coordX;
-	}
-
 	public void setCoordX(int coordX) {
 		this.coordX = coordX;
 	}
-
-	public int getCoordY() {
-		return coordY;
+	
+	public int getCoordX() {
+		return coordX;
 	}
 
 	public void setCoordY(int coordY) {
 		this.coordY = coordY;
 	}
-
-
+	
+	public int getCoordY() {
+		return coordY;
+	}
 }
