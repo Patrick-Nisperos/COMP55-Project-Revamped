@@ -19,9 +19,9 @@ public class InputListeners extends GraphicsProgram implements ActionListener,Ke
 	    private int arrIndex = 0;
 	    private int speedX = 0; 
 	    private int speedY = 0;
-	    private int speedVal=5;
-	    private int x=0;
-	    private int y=0;
+	    private int speedVal = 5;
+	    private int x = 0;
+	    private int y = 0;
 	    // below line is in case if we want to add different images to make it look animated
 	    private String[] pics = {"blue tank.png"}; 
 	    private Timer t = new Timer(25, this);

@@ -12,7 +12,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	public static final int PROGRAM_WIDTH = 1600;
 	public static final int PROGRAM_HEIGHT = 900;
 	private int userMovementSpeed = 0;
-	private int enemyMovementSpeed = 0;
+	private int enemyMovementSpeed = 4;
 	private GImage mainMenuScreen = new GImage("officialMainMenu.png");
 	private GImage pauseScreen = new GImage("pauseScreen.png");
 	
@@ -35,8 +35,10 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	
 	
 	private Timer mainMenuTimer = new Timer(1000, this);
-	ArrayList<GRect> enemyRectangles = new ArrayList<GRect>();
 	private Timer pauseTimer = new Timer(1000, this);
+	private Timer singlePlayerTimer = new Timer(50, this);
+	
+	ArrayList<GRect> enemyRectangles = new ArrayList<GRect>();
 	
 	public void init() {
 		setSize(PROGRAM_WIDTH, PROGRAM_HEIGHT);
@@ -160,6 +162,9 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			}
 			
 		}
+		if(singlePlayerTimer.isRunning()) {
+			enemyMovement();
+		}
 		
 	}
 	
@@ -190,7 +195,9 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	}
 	
 	public void singlePlayerMode() {
+		singlePlayerTimer.start();
 		System.out.println("Single player mode entered.");
+		
 		removeAll(); //Removes everything from screen.
 		Level levelOne = new Level(2);
 		levelOne.initLevel();
@@ -248,7 +255,14 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	}
 	
 	public void enemyMovement() { //controls the enemy movement mechanics
-		
+		for(GRect temp : enemyRectangles) {
+			if(temp.getX() == 0) {
+				enemyMovementSpeed = 4;
+			}if(temp.getX() > 1540 && temp.getX() < 1550) {
+				enemyMovementSpeed = -4;
+			}
+			temp.move(enemyMovementSpeed, 0);
+		}
 	}
 	
 	public void userFire() { //controls the user fire mechanics
