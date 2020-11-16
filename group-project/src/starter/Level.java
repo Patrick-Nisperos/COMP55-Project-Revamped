@@ -18,6 +18,7 @@ public class Level {
 	
 	ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 	ArrayList<Shield> shields = new ArrayList<Shield>();
+	ArrayList<GRect> playerShields = new ArrayList<GRect>();
 	ArrayList<CharacterEntity> users = new ArrayList<CharacterEntity>();
 	ArrayList<GRect> enemyRectangles = new ArrayList<GRect>();
 	
@@ -33,8 +34,8 @@ public class Level {
 	 
 	EnemyType typeHeavy = new EnemyType(200, 50, enemyHitbox, EnemyTypeCode.HEAVY);
 	
-	Shield tempGameShield1 = new Shield(100, 200, 500, 200, 700);
-	Shield tempGameShield2 = new Shield(100, 200, 500, 200, 700);
+	Shield tempGameShield1 = new Shield(100, 200, 500, 250, 650, false);
+	Shield tempGameShield2 = new Shield(100, 200, 500, 1150, 650, false);
 	
 	public Level(int levelNumber) {
 		this.levelNumber = levelNumber;
@@ -190,8 +191,13 @@ public class Level {
 		}
 		return enemyRectangles;
 	}
-	public void placeShield() {
-		
+	public ArrayList<GRect> placeShield() {
+		GRect tempRec;
+		for(Shield temp: shields) {
+			tempRec = new GRect(temp.getCoordX(), temp.getCoordY(), temp.getWidth(), temp.getHeight());
+			playerShields.add(tempRec);
+		}
+		return playerShields;
 	}
 	public void clearEnemyList() {
 		if (enemies.size() != 0) {
