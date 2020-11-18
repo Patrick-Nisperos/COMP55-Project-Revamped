@@ -57,7 +57,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private int singlePlayerArrIndex = 0;
 	private int singlePlayerSpeedX = 6; 
 
-	private ArrayList<Projectile> singlePlayerProjectiles;
+	private ArrayList<Projectile> singlePlayerProjectiles = new ArrayList<Projectile>();
 	
  // below line is in case if we want to add different images to make it look animated
 	private String[] pics = {"blue tank.png"}; 
@@ -338,17 +338,17 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	}
 	
 	public void singlePlayerUserFire() { //controls the user fire mechanics
-		Projectile temp = new Projectile(5,50,40);
+		Projectile temp = new Projectile(10,50,40);
 		temp.setCoord(singlePlayerTank.getX() + 34, singlePlayerTank.getY());
 		add(temp.getProjectilePic());
-		//singlePlayerProjectiles.add(temp);
+		singlePlayerProjectiles.add(temp);
 		return;
 	}
 	
 	public void singlePlayerMoveProjectile() {
-//		for (Projectile temp:singlePlayerProjectiles) {
-//			temp.getProjectilePic().move(0, temp.getSpeed());
-//		}
+		for (Projectile temp:singlePlayerProjectiles) {
+			temp.getProjectilePic().move(0, -1 * temp.getSpeed());
+		}
 	}
 	
 	public void enemyFire() { //controls the enemy fire mechanics
