@@ -56,9 +56,12 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private int singlePlayerTankStartingYCoord = 800 ;
 	private int singlePlayerArrIndex = 0;
 	private int singlePlayerSpeedX = 6; 
-
-	private ArrayList<Projectile> singlePlayerProjectiles;
 	
+	//picture for the shield
+	private GImage Shield1 = new GImage("Rock px.png", 250, 650);
+	private GImage Shield2 = new GImage("Rock px.png", 1150, 650);
+	
+
  // below line is in case if we want to add different images to make it look animated
 	private String[] pics = {"blue tank.png"}; 
 	    
@@ -165,7 +168,6 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	        }
 	        if(moveKeyCode == 87) { 
 	        	System.out.println("you pressed *w* fire projectile");
-	        	singlePlayerUserFire();
 	        }	      
 	     }
 	}
@@ -227,8 +229,6 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		}
 		if(singlePlayerTimer.isRunning()) {
 			enemyMovement();
-			singlePlayerMoveProjectile();
-			//put projectile sensoring here
 		}
 		//control screen button recognition
 		if(controlScreenTimer.isRunning()) {
@@ -337,18 +337,8 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		}
 	}
 	
-	public void singlePlayerUserFire() { //controls the user fire mechanics
-		Projectile temp = new Projectile(5,50,40);
-		temp.setCoord(singlePlayerTank.getX() + 34, singlePlayerTank.getY());
-		add(temp.getProjectilePic());
-		//singlePlayerProjectiles.add(temp);
-		return;
-	}
-	
-	public void singlePlayerMoveProjectile() {
-//		for (Projectile temp:singlePlayerProjectiles) {
-//			temp.getProjectilePic().move(0, temp.getSpeed());
-//		}
+	public void userFire() { //controls the user fire mechanics
+		
 	}
 	
 	public void enemyFire() { //controls the enemy fire mechanics
@@ -372,6 +362,9 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	public void pasteShields() {
 		for(GRect temp : playerShields) {
 			add(temp);
+			
 		}
+		add(Shield1);
+		add(Shield2);
 	}
 }
