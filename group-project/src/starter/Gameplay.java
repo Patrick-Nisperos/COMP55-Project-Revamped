@@ -57,6 +57,8 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private int singlePlayerArrIndex = 0;
 	private int singlePlayerSpeedX = 6; 
 
+	private ArrayList<Projectile> singlePlayerProjectiles;
+	
  // below line is in case if we want to add different images to make it look animated
 	private String[] pics = {"blue tank.png"}; 
 	    
@@ -163,6 +165,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	        }
 	        if(moveKeyCode == 87) { 
 	        	System.out.println("you pressed *w* fire projectile");
+	        	singlePlayerUserFire();
 	        }	      
 	     }
 	}
@@ -224,6 +227,8 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		}
 		if(singlePlayerTimer.isRunning()) {
 			enemyMovement();
+			singlePlayerMoveProjectile();
+			//put projectile sensoring here
 		}
 		//control screen button recognition
 		if(controlScreenTimer.isRunning()) {
@@ -332,8 +337,18 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		}
 	}
 	
-	public void userFire() { //controls the user fire mechanics
-		
+	public void singlePlayerUserFire() { //controls the user fire mechanics
+		Projectile temp = new Projectile(5,50,40);
+		temp.setCoord(singlePlayerTank.getX() + 34, singlePlayerTank.getY());
+		add(temp.getProjectilePic());
+		//singlePlayerProjectiles.add(temp);
+		return;
+	}
+	
+	public void singlePlayerMoveProjectile() {
+//		for (Projectile temp:singlePlayerProjectiles) {
+//			temp.getProjectilePic().move(0, temp.getSpeed());
+//		}
 	}
 	
 	public void enemyFire() { //controls the enemy fire mechanics

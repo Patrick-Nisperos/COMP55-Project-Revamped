@@ -22,11 +22,11 @@ public class Level {
 	ArrayList<CharacterEntity> users = new ArrayList<CharacterEntity>();
 	ArrayList<GRect> enemyRectangles = new ArrayList<GRect>();
 	
-	Projectile enemyProjectile = new Projectile(5);
-	Projectile userProjectile = new Projectile(5);
+	private Projectile enemyProjectile;
+
 	Hitbox userHitbox = new Hitbox(50, 70);
 	Hitbox enemyHitbox = new Hitbox(50, 70);
-	CharacterEntity user = new CharacterEntity(100, 50, false, 800, 800, userProjectile, userHitbox);
+	//CharacterEntity user = new CharacterEntity(100, 50, false, 800, 800, userProjectile, userHitbox);
 	
 	EnemyType typeLight = new EnemyType(50, 10, enemyHitbox, EnemyTypeCode.LIGHT);
 	 
@@ -41,10 +41,6 @@ public class Level {
 		this.levelNumber = levelNumber;
 	}
 	
-	public GRect createUser() {
-		GRect userRect = new GRect(user.getCoordX(), user.getCoordY(), user.getUserHitbox().getHeight(), user.getUserHitbox().getWidth());
-		return userRect;
-	}
 	public void placeScoreSystem() {
 		
 	}

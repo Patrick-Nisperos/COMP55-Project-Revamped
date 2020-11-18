@@ -32,6 +32,9 @@ public class Projectile {
 	public void setSize(int height,int width) {
 		projectilePic.setSize(height,width);
 	}
+	public void setCoord(double xCoord, double yCoord) {
+		projectilePic.setLocation(xCoord, yCoord);
+	}
 
 	
 }
