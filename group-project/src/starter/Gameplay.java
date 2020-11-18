@@ -171,6 +171,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	        }
 	        if(moveKeyCode == 87) { 
 	        	System.out.println("you pressed *w* fire projectile");
+				singlePlayerUserFire();
 	        }	      
 	     }
 	}
@@ -232,6 +233,8 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		}
 		if(singlePlayerTimer.isRunning()) {
 			enemyMovement();
+			singlePlayerMoveProjectile();
+			
 		}
 		//control screen button recognition
 		if(controlScreenTimer.isRunning()) {
