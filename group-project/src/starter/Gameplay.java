@@ -169,17 +169,21 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		            }
 	        	}
 	        }
-	        if(moveKeyCode == 87) { 
-	        	System.out.println("you pressed *w* fire projectile");
-				singlePlayerUserFire();
-	        }	      
+//	        if(moveKeyCode == 87) { 
+//	   
+//	        }	      
 	     }
 	}
 	
 	public void keyReleased(KeyEvent e) {
 		System.out.println("You released key code: " + e.getKeyCode());      
+        if(e.getKeyCode() == 87) { 
+        	System.out.println("you pressed *w* fire projectile");
+        	singlePlayerUserFire();
+        }
 	}	
 	
+
 	
 	public void actionPerformed(ActionEvent e) {
 		//Main menu button click recognition
@@ -246,7 +250,6 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 				displayMenu();
 			}
 		}
-		
 	}
 	
 	
@@ -358,15 +361,14 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		}
 	}
 	public void singlePlayerObjHit() {
-		double coordX,coordY;
-		for(Projectile temp:singlePlayerProjectiles) {
-			coordX=temp.getProjectilePic().getX()+temp.getProjectilePic().getWidth()+1;
-			coordY=temp.getProjectilePic().getY()+(temp.getProjectilePic().getHeight());
+		for(int i = 0; i < singlePlayerProjectiles.size(); i++) {
+			Projectile temp = singlePlayerProjectiles.get(i);
+			double coordX=temp.getProjectilePic().getX()+temp.getProjectilePic().getWidth()+1;
+			double coordY=temp.getProjectilePic().getY()+(temp.getProjectilePic().getHeight()/2);
 			if(getElementAt(coordX,coordY) instanceof GRect) {
 				remove(getElementAt(coordX,coordY));
 				remove(temp.getProjectilePic());
-//				remove(getElementAt(temp.getProjectilePic().getX(),temp.getProjectilePic().getY()));
-//				singlePlayerProjectiles.remove(temp);
+				singlePlayerProjectiles.remove(temp);
 			}
 		}
 	}
