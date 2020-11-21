@@ -234,6 +234,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		if(singlePlayerTimer.isRunning()) {
 			enemyMovement();
 			singlePlayerMoveProjectile();
+			singlePlayerObjHit();
 			
 		}
 		//control screen button recognition
@@ -354,6 +355,19 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	public void singlePlayerMoveProjectile() {
 		for (Projectile temp:singlePlayerProjectiles) {
 			temp.getProjectilePic().move(0, -1 * temp.getSpeed());
+		}
+	}
+	public void singlePlayerObjHit() {
+		double coordX,coordY;
+		for(Projectile temp:singlePlayerProjectiles) {
+			coordX=temp.getProjectilePic().getX()+temp.getProjectilePic().getWidth()+1;
+			coordY=temp.getProjectilePic().getY()+(temp.getProjectilePic().getHeight());
+			if(getElementAt(coordX,coordY) instanceof GRect) {
+				remove(getElementAt(coordX,coordY));
+				remove(temp.getProjectilePic());
+//				remove(getElementAt(temp.getProjectilePic().getX(),temp.getProjectilePic().getY()));
+//				singlePlayerProjectiles.remove(temp);
+			}
 		}
 	}
 
