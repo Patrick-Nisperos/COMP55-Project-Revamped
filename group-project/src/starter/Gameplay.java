@@ -53,7 +53,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	//List of lists of shields and enemies and enemy movement
 	private ArrayList<GRect> enemyRectangles = new ArrayList<GRect>();
 	private ArrayList<GRect> playerShields = new ArrayList<GRect>();
-	private int enemyMovementSpeed = 4;
+	private int enemyMovementSpeed = -4;
 	
 	//List of Single player tank movement variables and image
 	private GImage singlePlayerTank = new GImage("blue tank.png");
@@ -343,7 +343,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		for(GRect temp : enemyRectangles) {
 			if(temp.getX() == 0) {
 				enemyMovementSpeed = 4;
-			}if(temp.getX() > 1540 && temp.getX() < 1550) {
+			}if(temp.getX() == 1548) {
 				enemyMovementSpeed = -4;
 			}
 			temp.move(enemyMovementSpeed, 0);	
@@ -351,7 +351,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		for(GImage temp : enemyImages) {
 			if(temp.getX() == 0) {
 				enemyMovementSpeed = 4;
-			}if(temp.getX() > 1540 && temp.getX() < 1550) {
+			}if(temp.getX() == 1548) {
 				enemyMovementSpeed = -4;
 			}
 			temp.move(enemyMovementSpeed, 0);	
