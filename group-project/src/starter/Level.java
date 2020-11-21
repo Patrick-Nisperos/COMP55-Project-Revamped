@@ -195,6 +195,14 @@ public class Level {
 		}
 		return playerShields;
 	}
+	public void destroyShield(int coordX, int coordY) {
+		for (Shield temp : shields) {
+			if (coordX == temp.getCoordX() && coordY == temp.getCoordY()) {
+				Shield tempShield = new Shield(temp.getHeight(), temp.getWidth(), temp.getHealth(), temp.getCoordX(), temp.getCoordY(), true);
+				shields.remove(tempShield);
+			}
+		}
+	}
 	public void clearEnemyList() {
 		if (enemies.size() != 0) {
 			enemies.clear();
@@ -212,4 +220,4 @@ public class Level {
 		}
 	}
 }
-//oui
+//ouuiss
