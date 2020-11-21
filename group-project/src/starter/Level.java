@@ -21,6 +21,7 @@ public class Level {
 	ArrayList<GRect> playerShields = new ArrayList<GRect>();
 	ArrayList<CharacterEntity> users = new ArrayList<CharacterEntity>();
 	ArrayList<GRect> enemyRectangles = new ArrayList<GRect>();
+	ArrayList <GImage> enemyImages = new ArrayList<GImage>();
 	
 	private Projectile enemyProjectile;
 
@@ -45,6 +46,9 @@ public class Level {
 		
 	}
 	
+	public ArrayList<Enemy> getArrayListOfEnemies(){
+		return enemies;
+	}
 	public int getNumberOfEnemiesLight() {
 		return numberOfEnemiesLight;
 	}
@@ -187,6 +191,22 @@ public class Level {
 		}
 		return enemyRectangles;
 	}
+	public ArrayList<GImage> createEnemyImages(){
+		GImage tempImage;
+		for(Enemy temp : enemies) {
+			if(temp.getTypeOfEnemy().geteTypeCode() == EnemyTypeCode.LIGHT) {
+				GImage imageLight = new GImage("red tank.png", temp.getCordinateX(), temp.getCordinateY());
+				enemyImages.add(imageLight);
+			}if(temp.getTypeOfEnemy().geteTypeCode() == EnemyTypeCode.MEDIUM) {
+				GImage imageMedium = new GImage("red tank 2.png", temp.getCordinateX(), temp.getCordinateY());
+				enemyImages.add(imageMedium);
+			}if(temp.getTypeOfEnemy().geteTypeCode() == EnemyTypeCode.HEAVY) {
+				GImage imageHeavy = new GImage("red tank 3.png", temp.getCordinateX(), temp.getCordinateY());
+				enemyImages.add(imageHeavy);
+			}
+		}
+		return enemyImages;
+	}
 	public ArrayList<GRect> placeShield() {
 		GRect tempRec;
 		for(Shield temp: shields) {
@@ -212,4 +232,3 @@ public class Level {
 		}
 	}
 }
-//oui

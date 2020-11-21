@@ -12,6 +12,11 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	public static final int PROGRAM_WIDTH = 1600;
 	public static final int PROGRAM_HEIGHT = 900;
 	
+	//Setting levels
+	private Level levelOne = new Level(1);
+	private Level levelTwo = new Level(2);
+	private Level levelThree = new Level(3);
+	
 	//List of Images of different screens
 	private GImage mainMenuScreen = new GImage("officialMainMenu.png");
 	private GImage pauseScreen = new GImage("pauseScreen.png");
@@ -60,9 +65,10 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private ArrayList<Projectile> singlePlayerProjectiles = new ArrayList<Projectile>();
 
 	
-	//picture for the shield
+	//picture for the shield and enemyTanks
 	private GImage Shield1 = new GImage("Rock px.png", 250, 650);
 	private GImage Shield2 = new GImage("Rock px.png", 1150, 650);
+	private ArrayList<GImage> enemyImages = new ArrayList<GImage>();
 	
 
  // below line is in case if we want to add different images to make it look animated
@@ -235,7 +241,6 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			enemyMovement();
 			singlePlayerMoveProjectile();
 			singlePlayerObjHit();
-			
 		}
 		//control screen button recognition
 		if(controlScreenTimer.isRunning()) {
@@ -277,11 +282,12 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		GImage levelOneBackground = new GImage("desert top view.jpg");
 		levelOneBackground.setSize(1600,900);
 		add(levelOneBackground);
-		Level levelOne = new Level(2);
 		levelOne.initLevel();
 		levelOne.printArrayList();
 		enemyRectangles = levelOne.createEnemyRect();
+		enemyImages = levelOne.createEnemyImages();
 		pasteEnemies();
+		pasteEnemyImages();
 		System.out.println("Size of GRect Array: " + enemyRectangles.size());
 		playerShields = levelOne.placeShield();
 		pasteShields();
@@ -340,7 +346,15 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			}if(temp.getX() > 1540 && temp.getX() < 1550) {
 				enemyMovementSpeed = -4;
 			}
-			temp.move(enemyMovementSpeed, 0);
+			temp.move(enemyMovementSpeed, 0);	
+		}
+		for(GImage temp : enemyImages) {
+			if(temp.getX() == 0) {
+				enemyMovementSpeed = 4;
+			}if(temp.getX() > 1540 && temp.getX() < 1550) {
+				enemyMovementSpeed = -4;
+			}
+			temp.move(enemyMovementSpeed, 0);	
 		}
 	}
 	
@@ -397,5 +411,10 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		}
 		add(Shield1);
 		add(Shield2);
+	}
+	public void pasteEnemyImages() {
+		for(GImage temp : enemyImages) {
+			add(temp);
+		}
 	}
 }
