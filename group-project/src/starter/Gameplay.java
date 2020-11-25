@@ -288,8 +288,8 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		levelOne.printArrayList();
 		enemyRectangles = levelOne.createEnemyRect();
 		enemyImages = levelOne.createEnemyImages();
-		pasteEnemies();
 		pasteEnemyImages();
+		pasteEnemies();
 		System.out.println("Size of GRect Array: " + enemyRectangles.size());
 		playerShields = levelOne.placeShield();
 		pasteShields();
@@ -378,14 +378,26 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			Projectile temp = singlePlayerProjectiles.get(i);
 			double coordX=temp.getProjectilePic().getX()+temp.getProjectilePic().getWidth()+1;
 			double coordY=temp.getProjectilePic().getY()+(temp.getProjectilePic().getHeight()/2);
-			if(getElementAt(coordX,coordY) instanceof GRect) {
-				remove(temp.getProjectilePic());
-				remove(getElementAt(coordX, coordY));
-				singlePlayerProjectiles.remove(temp);
+			if(getElementAt(coordX,coordY) instanceof GImage) {
+				//remove(temp.getProjectilePic());
+				for(GImage temp2 : enemyImages) {
+				if(temp2==getElementAt(coordX,coordY)) {
+					remove(temp2);
+					remove(temp.getProjectilePic());
+					singlePlayerProjectiles.remove(temp);
+				}
+				}
+				if(getElementAt(coordX,coordY)==Shield1) {
+					remove(Shield1);
+				}
+				else if(getElementAt(coordX,coordY)==Shield2) {
+					remove(Shield2);
+				}
+				//remove(getElementAt(coordX, coordY));
+				//singlePlayerProjectiles.remove(temp);
 			}
 		}
 	}
-
 	
 	public void enemyFire() { //controls the enemy fire mechanics
 		
@@ -402,12 +414,12 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	
 	public void pasteEnemies() {
 		for(GRect temp : enemyRectangles) {
-			add(temp);
+			//add(temp);
 		}
 	}
 	public void pasteShields() {
 		for(GRect temp : playerShields) {
-			add(temp);
+			//add(temp);
 			
 		}
 		add(Shield1);
