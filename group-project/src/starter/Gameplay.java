@@ -5,6 +5,8 @@ import acm.program.*;
 import acm.util.*;
 import java.awt.*;
 import java.awt.event.*;
+
+import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import java.util.ArrayList;
 
@@ -21,6 +23,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private GImage mainMenuScreen = new GImage("officialMainMenu.png");
 	private GImage pauseScreen = new GImage("pauseScreen.png");
 	private GImage controlScreen = new GImage("controlScreen.png");
+	private GImage winScreen = new GImage("singlePlayerWinScreen.png");
 	
 	//List of Different buttons for different screens
 	private GRect singlePlayerButton = new GRect(500, 160, 270, 50);
@@ -55,13 +58,16 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private ArrayList<GRect> playerShields = new ArrayList<GRect>();
 	private int enemyMovementSpeed = -4;
 	
-	//List of Single player tank movement variables and image
+	//List of Single player tank movement variables, score, and image
 	private GImage singlePlayerTank = new GImage("blue tank.png");
 	private int singlePlayerTankStartingXCoord = 800;
 	private int singlePlayerTankStartingYCoord = 800 ;
 	private int singlePlayerArrIndex = 0;
 	private int singlePlayerSpeedX = 6; 
-
+	private ArrayList<Integer> singlePlayerScores = new ArrayList<Integer>();
+	private int gameNumber = -1;
+	private GLabel singlePlayerScoreLabel = new GLabel("Score: ", 60, 850);
+	
 	private ArrayList<Projectile> singlePlayerProjectiles = new ArrayList<Projectile>();
 
 	
@@ -174,18 +180,16 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		               singlePlayerArrIndex = 0;
 		            }
 	        	}
-	        }
-//	        if(moveKeyCode == 87) { 
-//	        	System.out.println("you pressed *w* fire projectile");
-//	
-//	        }	      
+	        }    
 	     }
 	}
 	
 	public void keyReleased(KeyEvent e) {
-		System.out.println("You released key code: " + e.getKeyCode()); 
-		System.out.println("you pressed *w* fire projectile");
-		singlePlayerUserFire();
+		if(e.getKeyCode() == 87) { 
+			System.out.println("You released key code: " + e.getKeyCode()); 
+			System.out.println("you pressed *w* fire projectile");
+			singlePlayerUserFire();
+		}
 	}	
 	
 	
@@ -243,6 +247,9 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			enemyMovement();
 			singlePlayerMoveProjectile();
 			singlePlayerObjHit();
+			if(enemyImages.isEmpty()) {
+				userWin();
+			}
 		}
 		//control screen button recognition
 		if(controlScreenTimer.isRunning()) {
@@ -294,7 +301,10 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		playerShields = levelOne.placeShield();
 		pasteShields();
 	    add(singlePlayerTank,singlePlayerTankStartingXCoord,singlePlayerTankStartingYCoord);
-	    
+	    singlePlayerScores.add(0);
+	    gameNumber++;
+		singlePlayerScoreLabel.setFont("AgencyFB-Bold-40");
+	    add(singlePlayerScoreLabel);
 	}
 	
 	public void pauseGame() { //Displays a screen when game is paused
@@ -330,7 +340,9 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	}
 	
 	public void userWin() { //displays the screen when the user wins
-		
+		System.out.println("User Win Entered");
+		removeAll(); //Removes everything from screen.
+		add(winScreen);
 	}
 	
 	public void userLose() { //displays the screen when the user loses
@@ -379,12 +391,14 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			double coordX=temp.getProjectilePic().getX()+temp.getProjectilePic().getWidth()+1;
 			double coordY=temp.getProjectilePic().getY()+(temp.getProjectilePic().getHeight()/2);
 			if(getElementAt(coordX,coordY) instanceof GImage) {
-				//remove(temp.getProjectilePic());
 				for(GImage temp2 : enemyImages) {
 				if(temp2==getElementAt(coordX,coordY)) {
 					remove(temp2);
 					remove(temp.getProjectilePic());
 					singlePlayerProjectiles.remove(temp);
+					calculateScore();
+					displayScoreInGame();
+					
 				}
 				}
 				if(getElementAt(coordX,coordY)==Shield1) {
@@ -403,12 +417,16 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		
 	}
 	
-	public int calculateScore() { //calculates the score of the user
-		int score = 0;
-		return score;
+	public void calculateScore() { //calculates the score of the user
+		//we have to put if statemetns showing the increased score if you killed different types of enemies.
+		int currentScore = singlePlayerScores.get(gameNumber);
+		singlePlayerScores.set(gameNumber, 10 + currentScore);
+		System.out.println(singlePlayerScores.get(gameNumber));
 	}
 	
-	public void displayScoreboard() { //displays the score board screen
+	public void displayScoreInGame() { //displays the score board in game
+		singlePlayerScoreLabel.setLabel("Score: " + singlePlayerScores.get(gameNumber));
+		add(singlePlayerScoreLabel);
 		
 	}
 	
