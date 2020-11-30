@@ -77,6 +77,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private GLabel singlePlayerScoreLabel = new GLabel("Score: ", 30, 600);
 	
 	private ArrayList<Projectile> singlePlayerProjectiles = new ArrayList<Projectile>();
+	private ArrayList<Projectile> enemyProjectiles = new ArrayList<Projectile>();
 
 	
 	//picture for the shield and enemyTanks
@@ -437,14 +438,45 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		singlePlayerProjectiles.add(temp);
 		userFirePic.setLocation(singlePlayerTank.getX() + 9, singlePlayerTank.getY() - 45);
 		add(userFirePic);
-		return;
 	}
-	
 	public void singlePlayerMoveProjectile() {
 		for (Projectile temp:singlePlayerProjectiles) {
 			temp.getProjectilePic().move(0, -1 * temp.getSpeed());
 		}
 	}
+	
+	public void enemyFire() { //controls the enemy fire mechanics
+		Projectile temp = new Projectile(5, 50, 40);
+		for(GImage tempImage : enemyImages) {
+			if(canEnemyFire(tempImage)) {
+				temp.setCoord(tempImage.getX(), tempImage.getY());
+				add(temp.getProjectilePic());
+				enemyProjectiles.add(temp);
+				userFirePic.setLocation(tempImage.getX(), tempImage.getY());
+				add(userFirePic);
+			}
+		}
+	}
+	public void enemyProjectileMovement() {
+		for(Projectile temp : enemyProjectiles) {
+			temp.getProjectilePic().move(0, temp.getSpeed());
+		}
+	}
+	public boolean canEnemyFire(GImage x) {
+		for(GImage tempImage : enemyImages) {
+			if(x.getX() == tempImage.getX() && x.getY() == tempImage.getY()) {
+				continue;
+			}
+			if(x.getX() == tempImage.getX() && x.getY() < tempImage.getY()) {
+				return false;
+			}
+			if(x.getX() == tempImage.getX() && x.getY() > tempImage.getY()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public void singlePlayerObjHit() {
 		for(int i = 0; i < singlePlayerProjectiles.size(); i++) {
 			Projectile temp = singlePlayerProjectiles.get(i);
@@ -507,10 +539,6 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	
 	public void deleteUserFirePic() {
 		remove(userFirePic);
-	}
-	
-	public void enemyFire() { //controls the enemy fire mechanics
-		
 	}
 	
 	public void calculateScore() { //calculates the score of the user
