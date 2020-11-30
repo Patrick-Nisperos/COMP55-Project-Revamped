@@ -26,6 +26,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private GImage controlScreen = new GImage("controlScreen.png");
 	private GImage winScreen = new GImage("singlePlayerWinScreen.png");
 	private GImage loseScreen = new GImage("singlePlayerLoseScreen.png");
+	private GImage scoreboardScreen = new GImage("scoreBoardScreen.png");
 	
 	//List of Different buttons for different screens
 	private GRect singlePlayerButton = new GRect(500, 160, 270, 50);
@@ -36,6 +37,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private GRect pauseReturnMainMenuButton = new GRect(480,215,280,50); //pause screen return main menu button
 	private GRect resumeButton = new GRect(860, 215, 220, 50);
 	private GRect controlReturnMainMenuButton = new GRect(1240,780,280,50); //control screen return main menu button
+	private GRect scoreReturnMainMenuButton = new GRect(1240,780,280,50); //scoreboard screen return main menu button
 	
 	//List of booleans for buttons
 	private boolean singlePlayerButtonPressed = false;
@@ -47,12 +49,14 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private boolean resumeButtonPressed = false;
 	private boolean exitButtonPressed = false;
 	private boolean controlReturnMainMenuPressed = false;
+	private boolean scoreReturnMainMenuPressed = false;
 	
 	//List of different timers
 	private Timer mainMenuTimer = new Timer(1000, this);
 	private Timer pauseTimer = new Timer(1000, this);
 	private Timer singlePlayerTimer = new Timer(50, this);
 	private Timer controlScreenTimer = new Timer(1000, this);
+	private Timer scoreboardScreenTimer = new Timer(1000,this);
 	private Timer gameTimer = new Timer(1000, this); //used to track if user is in game
 	private Timer animationTimer = new Timer(1000, this);
 
@@ -152,6 +156,15 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 					&& e.getY() < controlReturnMainMenuButton.getY() + controlReturnMainMenuButton.getHeight() &&
 					e.getY() >= controlReturnMainMenuButton.getY()) {
 				controlReturnMainMenuPressed = true;
+			}
+		}
+		
+		if(scoreboardScreenTimer.isRunning()) {
+			//scoreboard screen return to main menu button
+			if(e.getX() < scoreReturnMainMenuButton.getX() + scoreReturnMainMenuButton.getWidth() && e.getX() >= scoreReturnMainMenuButton.getX() 
+					&& e.getY() < scoreReturnMainMenuButton.getY() + scoreReturnMainMenuButton.getHeight() &&
+					e.getY() >= scoreReturnMainMenuButton.getY()) {
+				scoreReturnMainMenuPressed = true;
 			}
 		}
 		
@@ -255,7 +268,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			enemyMovement();
 			singlePlayerMoveProjectile();
 			singlePlayerObjHit();
-			if(enemyImages.isEmpty()) {
+			if(enemyImages.isEmpty() && pauseTimer.isRunning() == false) {
 				userWin();
 			}
 		}
@@ -275,6 +288,15 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 				gameTimer.stop();
 				controlScreenTimer.stop();
 				controlReturnMainMenuPressed = false;
+				displayMenu();
+			}
+		}
+		//scoreboard screen button recognition
+		if(scoreboardScreenTimer.isRunning()) {
+			if(scoreReturnMainMenuPressed) {
+				gameTimer.stop();
+				scoreboardScreenTimer.stop();
+				scoreReturnMainMenuPressed = false;
 				displayMenu();
 			}
 		}
@@ -331,6 +353,9 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		pauseTimer.start();
 		System.out.println("Game Paused");
 		removeAll();
+		enemyRectangles.clear();
+		enemyImages.clear();
+		singlePlayerProjectiles.clear();
 		pauseScreen.setSize(1600, 900);
 		add(pauseScreen);
 		add(pauseReturnMainMenuButton);
@@ -339,8 +364,20 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	}
 	
 	public void displayScoreBoard() { //Displays the scoreboard
+		scoreboardScreenTimer.start();
 		System.out.println("Scoreboard entered.");
 		removeAll(); //Removes everything from screen.
+		scoreboardScreen.setSize(1600,900);
+		add(scoreboardScreen);
+		add(scoreReturnMainMenuButton);
+		for(int i = 0; i < singlePlayerScores.size(); i++) {
+			GLabel score = new GLabel("Score: " + singlePlayerScores.get(i), 900, 300 + (i * 100)); 
+			score.setFont("AgencyFB-Bold-50");
+			add(score);
+			GLabel gameNumber = new GLabel("Game # " + (i + 1), 500, 300 + (i * 100));
+			gameNumber.setFont("AgencyFB-BOLD-50");
+			add(gameNumber);
+		}
 	}
 	
 	public void coopMode() {
@@ -362,6 +399,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	public void userWin() { //displays the screen when the user wins
 		System.out.println("User Win Entered");
 		removeAll(); //Removes everything from screen.
+		winScreen.setSize(1600,900);
 		add(winScreen);
 	}
 	
@@ -485,7 +523,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	public void displayScoreInGame() { //displays the score board in game
 		singlePlayerScoreLabel.setLabel("Score: " + singlePlayerScores.get(gameNumber));
 		add(singlePlayerScoreLabel);
-		
+
 	}
 	
 	public void pasteEnemies() {
