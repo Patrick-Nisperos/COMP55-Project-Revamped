@@ -85,6 +85,9 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private GImage Shield1 = new GImage("Rock px.png", 250, 650);
 	private GImage Shield2 = new GImage("Rock px.png", 1150, 650);
 	private ArrayList<GImage> enemyImages = new ArrayList<GImage>();
+	
+	
+	private int enemyHitCount = 0;
 	    
 	//Pictures and integers for the animation
 	private GImage explode1 = new GImage("Explosion1.png", 100, 200);
@@ -270,9 +273,13 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			enemyMovement();
 			singlePlayerMoveProjectile();
 			singlePlayerObjHit();
-			if(enemyImages.isEmpty() && pauseTimer.isRunning() == false) {
-				userWin();
-			}
+		if(enemyHitCount==30) {
+			userWin();
+			enemyHitCount=0;
+		}
+//			if(enemyImages.isEmpty() && pauseTimer.isRunning() == false) {
+//				userWin();
+//			}
 		}
 		//if(enemyFireTimer.isRunning()) {
 			//enemyFire();
@@ -418,6 +425,9 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	public void userWin() { //displays the screen when the user wins
 		System.out.println("User Win Entered");
 		removeAll(); //Removes everything from screen.
+		enemyRectangles.clear();
+		enemyImages.clear();
+		singlePlayerProjectiles.clear();
 		winScreen.setSize(1600,900);
 		add(winScreen);
 	}
@@ -520,22 +530,36 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			double coordX=temp.getProjectilePic().getX()+temp.getProjectilePic().getWidth()+1;
 			double coordY=temp.getProjectilePic().getY()+(temp.getProjectilePic().getHeight()/2);
 			if(getElementAt(coordX,coordY) instanceof GImage) {
-				for(GImage temp2 : enemyImages) {
-					if(temp2==getElementAt(coordX,coordY)) {
-						remove(temp2);
+				//for(GImage temp2 : enemyImages) {
+					for(int k=0;k<enemyImages.size();k++) {
+						
+					
+					if(enemyImages.get(k)==getElementAt(coordX,coordY)) {
+						remove(enemyImages.get(k));
+						enemyImages.remove(k);
+						
+						//enemyImages.remove(getElementAt(coordX,coordY));
+						//enemyRectangles.remove(getElementAt(coordX,coordY));
+
 						remove(temp.getProjectilePic());
 						animateHit(coordX, coordY);
 						singlePlayerProjectiles.remove(temp);
+						enemyHitCount++;
 						calculateScore();
 						displayScoreInGame();
 					
+						System.out.println(enemyImages.size());
 					}
 				}
 				if(getElementAt(coordX,coordY)==Shield1) {
-					remove(Shield1);
+					//remove(Shield1);
+					remove(temp.getProjectilePic());
+					singlePlayerProjectiles.remove(temp);
 				}
 				else if(getElementAt(coordX,coordY)==Shield2) {
-					remove(Shield2);
+					//remove(Shield2);
+					remove(temp.getProjectilePic());
+					singlePlayerProjectiles.remove(temp);
 				}
 				//remove(getElementAt(coordX, coordY));
 				//singlePlayerProjectiles.remove(temp);
