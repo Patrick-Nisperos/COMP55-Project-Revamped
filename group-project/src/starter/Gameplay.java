@@ -59,6 +59,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private Timer scoreboardScreenTimer = new Timer(1000,this);
 	private Timer gameTimer = new Timer(1000, this); //used to track if user is in game
 	private Timer animationTimer = new Timer(1000, this);
+	private Timer enemyFireTimer = new Timer(1000000000, this);
 
 	
 	//List of lists of shields and enemies and enemy movement
@@ -211,8 +212,6 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 				singlePlayerUserFire();
 				singlePlayerFireNumber = 0;
 			}
-
-
 		}
 	}	
 	
@@ -275,6 +274,10 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 				userWin();
 			}
 		}
+		//if(enemyFireTimer.isRunning()) {
+			//enemyFire();
+			//();
+		//}
 		if(animationTimer.isRunning()) {
 			animateNumber++;
 			if(animateNumber % 7 == 6) {
@@ -337,6 +340,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		gameTimer.start();
 		singlePlayerTimer.start();
 		animationTimer.start();
+		enemyFireTimer.start();
 		System.out.println("Single player mode entered.");
 		removeAll(); //Removes everything from screen.
 		
@@ -460,9 +464,9 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	}
 	
 	public void enemyFire() { //controls the enemy fire mechanics
-		Projectile temp = new Projectile(5, 50, 40);
 		for(GImage tempImage : enemyImages) {
 			if(canEnemyFire(tempImage)) {
+				Projectile temp = new Projectile(5, 50, 40);
 				temp.setCoord(tempImage.getX(), tempImage.getY());
 				add(temp.getProjectilePic());
 				enemyProjectiles.add(temp);
@@ -477,18 +481,37 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		}
 	}
 	public boolean canEnemyFire(GImage x) { //Checks if the enemy can fire , whether or not there is an enemy in front
-		for(GImage tempImage : enemyImages) {
-			if(x.getX() == tempImage.getX() && x.getY() == tempImage.getY()) {
-				continue;
+		boolean canFire = false;
+		if(x.getY() == 50) {
+			for(GImage tempImage : enemyImages) {
+				if(x.getX() == tempImage.getX() && tempImage.getY() == 150) {
+					canFire = false;
+					break;
+				}
+				if(x.getX() == tempImage.getX() && tempImage.getY() == 250) {
+					canFire = false;
+					break;
+				}else {
+					canFire = true;
+				}
 			}
-			if(x.getX() == tempImage.getX() && x.getY() < tempImage.getY()) {
-				return false;
-			}
-			if(x.getX() == tempImage.getX() && x.getY() > tempImage.getY()) {
-				return true;
-			}
+			return canFire;
 		}
-		return false;
+		if(x.getY() == 150) {
+			for(GImage tempImage : enemyImages) {
+				if(x.getX() == tempImage.getX() && tempImage.getY() == 250) {
+					canFire = false;
+					break;
+				}else {
+					canFire = true;
+				}
+			}
+			return canFire;
+		}
+		if(x.getY() == 250) {
+			return true;
+		}
+		return canFire;
 	}
 	
 	public void singlePlayerObjHit() {
