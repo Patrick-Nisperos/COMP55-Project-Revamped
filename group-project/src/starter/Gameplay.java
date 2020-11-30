@@ -90,6 +90,8 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private GImage explode2 = new GImage("Explosion2.png", 100, 200);
 	private GImage explode3 = new GImage("Explosion3.png", 100, 200);
 	private GImage userFirePic = new GImage("userFirePic.png", 100, 200);
+	private GImage levelOneBackground1 = new GImage("snow top view.jpg");
+	private GImage levelOneBackground2 = new GImage("snow top view2.jpg");
 	private int explodeNumber = 0;
 	private int animateNumber = 0;
 	private int singlePlayerFireNumber = 0; //used for user fire delay
@@ -282,6 +284,15 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 				deleteEnemyExplosion();
 				animateNumber = 0;
 			}
+			//Move the background
+			levelOneBackground1.move(-2, 0);
+			levelOneBackground2.move(-2, 0);
+			if(levelOneBackground1.getX() <= -1600) {
+				levelOneBackground1.setLocation(1600,0);
+			}
+			if(levelOneBackground2.getX() <= -1600) {
+				levelOneBackground2.setLocation(1600,0);
+			}
 		}
 		//control screen button recognition
 		if(controlScreenTimer.isRunning()) {
@@ -330,9 +341,12 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		removeAll(); //Removes everything from screen.
 		
 		//Level one initialize
-		GImage levelOneBackground = new GImage("desert top view.jpg");
-		levelOneBackground.setSize(1600,900);
-		add(levelOneBackground);
+		levelOneBackground1.setSize(1600,900);
+		levelOneBackground2.setSize(1600,900);
+		levelOneBackground1.setLocation(0,0);
+		levelOneBackground2.setLocation(1600,0);
+		add(levelOneBackground1);
+		add(levelOneBackground2);
 		levelOne.initLevel();
 		levelOne.printArrayList();
 		enemyRectangles = levelOne.createEnemyRect();
