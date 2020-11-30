@@ -471,12 +471,12 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			}
 		}
 	}
-	public void enemyProjectileMovement() {
+	public void enemyProjectileMovement() { //Moves the enemy projectiles
 		for(Projectile temp : enemyProjectiles) {
 			temp.getProjectilePic().move(0, temp.getSpeed());
 		}
 	}
-	public boolean canEnemyFire(GImage x) {
+	public boolean canEnemyFire(GImage x) { //Checks if the enemy can fire , whether or not there is an enemy in front
 		for(GImage tempImage : enemyImages) {
 			if(x.getX() == tempImage.getX() && x.getY() == tempImage.getY()) {
 				continue;
