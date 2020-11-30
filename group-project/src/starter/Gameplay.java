@@ -84,6 +84,8 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private GImage Shield1 = new GImage("Rock px.png", 250, 650);
 	private GImage Shield2 = new GImage("Rock px.png", 1150, 650);
 	private ArrayList<GImage> enemyImages = new ArrayList<GImage>();
+	
+	private int enemyHitCount = 0;
 	    
 	//Pictures and integers for the animation
 	private GImage explode1 = new GImage("Explosion1.png", 100, 200);
@@ -271,9 +273,13 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			enemyMovement();
 			singlePlayerMoveProjectile();
 			singlePlayerObjHit();
-			if(enemyImages.isEmpty() && pauseTimer.isRunning() == false) {
-				userWin();
-			}
+		if(enemyHitCount==30) {
+			userWin();
+			enemyHitCount=0;
+		}
+//			if(enemyImages.isEmpty() && pauseTimer.isRunning() == false) {
+//				userWin();
+//			}
 		}
 		if(animationTimer.isRunning()) {
 			animateNumber++;
@@ -414,6 +420,9 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	public void userWin() { //displays the screen when the user wins
 		System.out.println("User Win Entered");
 		removeAll(); //Removes everything from screen.
+		enemyRectangles.clear();
+		enemyImages.clear();
+		singlePlayerProjectiles.clear();
 		winScreen.setSize(1600,900);
 		add(winScreen);
 	}
@@ -503,6 +512,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 						remove(temp.getProjectilePic());
 						animateHit(coordX, coordY);
 						singlePlayerProjectiles.remove(temp);
+						enemyHitCount++;
 						calculateScore();
 						displayScoreInGame();
 					
