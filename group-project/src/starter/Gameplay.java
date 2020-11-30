@@ -6,6 +6,7 @@ import acm.util.*;
 import java.awt.*;
 import java.awt.event.*;
 
+import javax.swing.Action;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private GImage pauseScreen = new GImage("pauseScreen.png");
 	private GImage controlScreen = new GImage("controlScreen.png");
 	private GImage winScreen = new GImage("singlePlayerWinScreen.png");
+	private GImage loseScreen = new GImage("singlePlayerLoseScreen.png");
 	
 	//List of Different buttons for different screens
 	private GRect singlePlayerButton = new GRect(500, 160, 270, 50);
@@ -52,6 +54,8 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private Timer singlePlayerTimer = new Timer(50, this);
 	private Timer controlScreenTimer = new Timer(1000, this);
 	private Timer gameTimer = new Timer(1000, this); //used to track if user is in game
+	private Timer animationTimer = new Timer(1000, this);
+
 	
 	//List of lists of shields and enemies and enemy movement
 	private ArrayList<GRect> enemyRectangles = new ArrayList<GRect>();
@@ -80,6 +84,14 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
  // below line is in case if we want to add different images to make it look animated
 	private String[] pics = {"blue tank.png"}; 
 	    
+	//Pictures and integers for the animation
+	private GImage explode1 = new GImage("Explosion1.png", 100, 200);
+	private GImage explode2 = new GImage("Explosion2.png", 100, 200);
+	private GImage explode3 = new GImage("Explosion3.png", 100, 200);
+	private int explodeNumber = 0;
+	private int animateNumber = 0;
+	private int singlePlayerFireNumber = 0; //used for user fire delay
+	
 	public void init() {
 		setSize(PROGRAM_WIDTH, PROGRAM_HEIGHT);
 		addKeyListeners();
@@ -188,11 +200,17 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		if(e.getKeyCode() == 87) { 
 			System.out.println("You released key code: " + e.getKeyCode()); 
 			System.out.println("you pressed *w* fire projectile");
-			singlePlayerUserFire();
+			singlePlayerFireNumber++;
+			if(singlePlayerFireNumber == 2) { // Delays the user fire
+				singlePlayerUserFire();
+				singlePlayerFireNumber = 0;
+			}
+
+
 		}
 	}	
 	
-	
+
 	public void actionPerformed(ActionEvent e) {
 		//Main menu button click recognition
 		if(mainMenuTimer.isRunning()) {
@@ -251,6 +269,13 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 				userWin();
 			}
 		}
+		if(animationTimer.isRunning()) {
+			animateNumber++;
+			if(animateNumber == 20) {
+				deleteExplosion();
+				animateNumber = 0;
+			}
+		}
 		//control screen button recognition
 		if(controlScreenTimer.isRunning()) {
 			if(controlReturnMainMenuPressed) {
@@ -284,6 +309,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	public void singlePlayerMode() {
 		gameTimer.start();
 		singlePlayerTimer.start();
+		animationTimer.start();
 		System.out.println("Single player mode entered.");
 		removeAll(); //Removes everything from screen.
 		
@@ -305,6 +331,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	    gameNumber++;
 		singlePlayerScoreLabel.setFont("AgencyFB-Bold-40");
 	    add(singlePlayerScoreLabel);
+	   
 	}
 	
 	public void pauseGame() { //Displays a screen when game is paused
@@ -392,14 +419,15 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			double coordY=temp.getProjectilePic().getY()+(temp.getProjectilePic().getHeight()/2);
 			if(getElementAt(coordX,coordY) instanceof GImage) {
 				for(GImage temp2 : enemyImages) {
-				if(temp2==getElementAt(coordX,coordY)) {
-					remove(temp2);
-					remove(temp.getProjectilePic());
-					singlePlayerProjectiles.remove(temp);
-					calculateScore();
-					displayScoreInGame();
+					if(temp2==getElementAt(coordX,coordY)) {
+						remove(temp2);
+						remove(temp.getProjectilePic());
+						animateHit(coordX, coordY);
+						singlePlayerProjectiles.remove(temp);
+						calculateScore();
+						displayScoreInGame();
 					
-				}
+					}
 				}
 				if(getElementAt(coordX,coordY)==Shield1) {
 					remove(Shield1);
@@ -411,6 +439,37 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 				//singlePlayerProjectiles.remove(temp);
 			}
 		}
+	}
+	
+	public void animateHit(double coordX, double coordY) {
+		if(explodeNumber == 0) {
+			explode1.setLocation(coordX - 50, coordY - 70);
+			add(explode1);
+			explodeNumber++;
+			System.out.println("explode 1");
+			return;
+		}
+		if(explodeNumber == 1) {
+			explode2.setLocation(coordX - 50, coordY - 70);
+			add(explode2);
+			explodeNumber++;
+			System.out.println("explode 2");
+			return;
+		}
+		if(explodeNumber == 2) {
+			explode3.setLocation(coordX - 50, coordY - 70);
+			add(explode3);
+			explodeNumber = 0;
+			System.out.println("explode 3");
+			return;
+		}
+
+	}
+	
+	public void deleteExplosion() {
+		remove(explode1);
+		remove(explode2);
+		remove(explode3);
 	}
 	
 	public void enemyFire() { //controls the enemy fire mechanics
