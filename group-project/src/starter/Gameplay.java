@@ -509,10 +509,14 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 					}
 				}
 				if(getElementAt(coordX,coordY)==Shield1) {
-					remove(Shield1);
+					//remove(Shield1);
+					remove(temp.getProjectilePic());
+					singlePlayerProjectiles.remove(temp);
 				}
 				else if(getElementAt(coordX,coordY)==Shield2) {
-					remove(Shield2);
+					//remove(Shield2);
+					remove(temp.getProjectilePic());
+					singlePlayerProjectiles.remove(temp);
 				}
 				//remove(getElementAt(coordX, coordY));
 				//singlePlayerProjectiles.remove(temp);
