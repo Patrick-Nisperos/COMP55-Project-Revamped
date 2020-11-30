@@ -342,6 +342,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		//Level one initialize
 		levelOneBackground1.setSize(1600,900);
 		levelOneBackground2.setSize(1600,900);
+		levelOneBackground1.setLocation(0,0);
 		levelOneBackground2.setLocation(1600,0);
 		add(levelOneBackground1);
 		add(levelOneBackground2);
