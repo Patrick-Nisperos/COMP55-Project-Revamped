@@ -88,6 +88,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private GImage explode1 = new GImage("Explosion1.png", 100, 200);
 	private GImage explode2 = new GImage("Explosion2.png", 100, 200);
 	private GImage explode3 = new GImage("Explosion3.png", 100, 200);
+	private GImage userFirePic = new GImage("userFirePic.png", 100, 200);
 	private int explodeNumber = 0;
 	private int animateNumber = 0;
 	private int singlePlayerFireNumber = 0; //used for user fire delay
@@ -271,8 +272,11 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		}
 		if(animationTimer.isRunning()) {
 			animateNumber++;
+			if(animateNumber % 7 == 6) {
+				deleteUserFirePic();
+			}
 			if(animateNumber == 20) {
-				deleteExplosion();
+				deleteEnemyExplosion();
 				animateNumber = 0;
 			}
 		}
@@ -404,6 +408,8 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		temp.setCoord(singlePlayerTank.getX() + 34, singlePlayerTank.getY());
 		add(temp.getProjectilePic());
 		singlePlayerProjectiles.add(temp);
+		userFirePic.setLocation(singlePlayerTank.getX() + 9, singlePlayerTank.getY() - 45);
+		add(userFirePic);
 		return;
 	}
 	
@@ -466,10 +472,14 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 
 	}
 	
-	public void deleteExplosion() {
+	public void deleteEnemyExplosion() {
 		remove(explode1);
 		remove(explode2);
 		remove(explode3);
+	}
+	
+	public void deleteUserFirePic() {
+		remove(userFirePic);
 	}
 	
 	public void enemyFire() { //controls the enemy fire mechanics
