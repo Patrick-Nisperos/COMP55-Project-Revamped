@@ -70,7 +70,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private int singlePlayerSpeedX = 6; 
 	private ArrayList<Integer> singlePlayerScores = new ArrayList<Integer>();
 	private int gameNumber = -1;
-	private GLabel singlePlayerScoreLabel = new GLabel("Score: ", 60, 850);
+	private GLabel singlePlayerScoreLabel = new GLabel("Score: ", 30, 600);
 	
 	private ArrayList<Projectile> singlePlayerProjectiles = new ArrayList<Projectile>();
 
@@ -79,10 +79,6 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private GImage Shield1 = new GImage("Rock px.png", 250, 650);
 	private GImage Shield2 = new GImage("Rock px.png", 1150, 650);
 	private ArrayList<GImage> enemyImages = new ArrayList<GImage>();
-	
-
- // below line is in case if we want to add different images to make it look animated
-	private String[] pics = {"blue tank.png"}; 
 	    
 	//Pictures and integers for the animation
 	private GImage explode1 = new GImage("Explosion1.png", 100, 200);
@@ -177,21 +173,13 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	        if(moveKeyCode == 68){ //"d" right movement
 	        	if(singlePlayerTank.getX() < 1520) {// Line to ensure tank doesn't leave boundaries
 		        	singlePlayerTank.move(singlePlayerSpeedX,0);
-		        	singlePlayerTank.setImage(pics[singlePlayerArrIndex]);
-		        	singlePlayerArrIndex++;
-		            if(singlePlayerArrIndex>=pics.length){
-		               	singlePlayerArrIndex = 0;
-		            }
+		        	singlePlayerTank.setImage("Blue tank right.png");
 	        	}
 	        }
 	        if(moveKeyCode == 65) { //"a" left movement
 	        	if(singlePlayerTank.getX() > -10) { // Line to ensure tank doesn't leave boundaries
 		        	singlePlayerTank.move(-1 * singlePlayerSpeedX,0);
-		        	singlePlayerTank.setImage(pics[singlePlayerArrIndex]);
-		        	singlePlayerArrIndex++;
-		            if(singlePlayerArrIndex>=pics.length){
-		               singlePlayerArrIndex = 0;
-		            }
+		        	singlePlayerTank.setImage("Blue tank left.png");
 	        	}
 	        }    
 	     }
@@ -201,6 +189,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		if(e.getKeyCode() == 87) { 
 			System.out.println("You released key code: " + e.getKeyCode()); 
 			System.out.println("you pressed *w* fire projectile");
+        	singlePlayerTank.setImage("blue tank.png");
 			singlePlayerFireNumber++;
 			if(singlePlayerFireNumber == 2) { // Delays the user fire
 				singlePlayerUserFire();
