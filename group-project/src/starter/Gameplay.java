@@ -507,9 +507,17 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			double coordX=temp.getProjectilePic().getX()+temp.getProjectilePic().getWidth()+1;
 			double coordY=temp.getProjectilePic().getY()+(temp.getProjectilePic().getHeight()/2);
 			if(getElementAt(coordX,coordY) instanceof GImage) {
-				for(GImage temp2 : enemyImages) {
-					if(temp2==getElementAt(coordX,coordY)) {
-						remove(temp2);
+				//for(GImage temp2 : enemyImages) {
+					for(int k=0;k<enemyImages.size();k++) {
+						
+					
+					if(enemyImages.get(k)==getElementAt(coordX,coordY)) {
+						remove(enemyImages.get(k));
+						enemyImages.remove(k);
+						
+						//enemyImages.remove(getElementAt(coordX,coordY));
+						//enemyRectangles.remove(getElementAt(coordX,coordY));
+
 						remove(temp.getProjectilePic());
 						animateHit(coordX, coordY);
 						singlePlayerProjectiles.remove(temp);
@@ -517,6 +525,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 						calculateScore();
 						displayScoreInGame();
 					
+						System.out.println(enemyImages.size());
 					}
 				}
 				if(getElementAt(coordX,coordY)==Shield1) {
