@@ -85,6 +85,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private GImage Shield2 = new GImage("Rock px.png", 1150, 650);
 	private ArrayList<GImage> enemyImages = new ArrayList<GImage>();
 	
+	
 	private int enemyHitCount = 0;
 	    
 	//Pictures and integers for the animation
