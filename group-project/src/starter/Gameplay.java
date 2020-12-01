@@ -57,7 +57,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private Timer singlePlayerTimer = new Timer(50, this);
 	private Timer controlScreenTimer = new Timer(1000, this);
 	private Timer scoreboardScreenTimer = new Timer(1000,this);
-	private Timer gameTimer = new Timer(1000, this); //used to track if user is in game
+	private Timer gameTimer = new Timer(1000, this); //used to time in game, if run out, then you lose.
 	private Timer animationTimer = new Timer(1000, this);
 
 	
@@ -66,16 +66,18 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private ArrayList<GRect> playerShields = new ArrayList<GRect>();
 	private int enemyMovementSpeed = -4;
 	
-	//List of Single player tank movement variables, score, and image
+	//List of Single player tank movement variables, score, health, and image
 	private GImage singlePlayerTank = new GImage("blue tank.png");
 	private int singlePlayerTankStartingXCoord = 800;
-	private int singlePlayerTankStartingYCoord = 800 ;
+	private int singlePlayerTankStartingYCoord = 750;
 	private int singlePlayerArrIndex = 0;
 	private int singlePlayerSpeedX = 6; 
 	private ArrayList<Integer> singlePlayerScores = new ArrayList<Integer>();
 	private int gameNumber = -1;
-	private GLabel singlePlayerScoreLabel = new GLabel("Score: ", 30, 600);
-	
+	private GLabel singlePlayerScoreLabel = new GLabel("Score: ", 30, 880);
+	private int singlePlayerTankHealth = 10;
+	private GLabel singlePlayerHealthLabel = new GLabel("Health: ", 1350, 880);
+	private GLabel timerLabel = new GLabel("Time Left: ", 650, 880);
 	private ArrayList<Projectile> singlePlayerProjectiles = new ArrayList<Projectile>();
 	private ArrayList<Projectile> enemyProjectiles = new ArrayList<Projectile>();
 
@@ -95,6 +97,10 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private int explodeNumber = 0;
 	private int animateNumber = 0;
 	private int singlePlayerFireNumber = 0; //used for user fire delay
+	private int gameTime = 80; 
+	private int gameTimeAmount = 0; //used for game time delay
+
+	
 	
 	public void init() {
 		setSize(PROGRAM_WIDTH, PROGRAM_HEIGHT);
@@ -176,14 +182,14 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	
 	//Key Input Listeners
 	public void keyPressed(KeyEvent e) {
-		if(gameTimer.isRunning()) {
-			if (e.getKeyCode() == 27) {
-				System.out.println("You pressed *esc* ");
-				singlePlayerTimer.start();
-				pauseGame();
-			}
-		}
-		//Single Player Tank Movement and Fire
+//		if(gameTimer.isRunning()) {
+//			if (e.getKeyCode() == 27) {
+//				System.out.println("You pressed *esc* ");
+//				singlePlayerTimer.start();
+//				pauseGame();
+//			}
+//		}
+//		//Single Player Tank Movement and Fire
 	     if(singlePlayerTimer.isRunning()) {
 			int moveKeyCode = e.getKeyCode();
 	        if(moveKeyCode == 68){ //"d" right movement
@@ -249,24 +255,22 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	
 		}		
 		//pause screen button recognition 
-		if(pauseTimer.isRunning()) {
-			if(pauseReturnMainMenuPressed) {
-				singlePlayerTimer.stop();
-				gameTimer.stop();
-				pauseTimer.stop();
-				pauseReturnMainMenuPressed = false;
-				displayMenu();
-			}
-			if(resumeButtonPressed) {
-				pauseTimer.stop();
-				singlePlayerTimer.stop();
-				gameTimer.stop();
-				//Temporary here, later we must figure out how to resume a game properly.
-				singlePlayerMode();
-
-			}
-			
-		}
+//		if(pauseTimer.isRunning()) {
+//			if(pauseReturnMainMenuPressed) {
+//				singlePlayerTimer.stop();
+//				gameTimer.stop();
+//				pauseTimer.stop();
+//				pauseReturnMainMenuPressed = false;
+//				displayMenu();
+//			}
+//			if(resumeButtonPressed) {
+//				pauseTimer.stop();
+//				singlePlayerTimer.stop();
+//				gameTimer.stop();
+//				//Temporary here, later we must figure out how to resume a game properly.
+//				singlePlayerMode();
+//			}
+//		}
 		if(singlePlayerTimer.isRunning()) {
 			enemyMovement();
 			singlePlayerMoveProjectile();
@@ -274,6 +278,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			if(enemyImages.isEmpty() && pauseTimer.isRunning() == false) {
 				userWin();
 			}
+			displayHealthInGame();
 		}
 		if(animationTimer.isRunning()) {
 			animateNumber++;
@@ -312,7 +317,14 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 				displayMenu();
 			}
 		}
-		
+		if(gameTimer.isRunning()) {
+			gameTimeAmount++;
+			if(gameTimeAmount == 21) {
+				gameTime--;
+				gameTimeAmount = 0;
+				displayTimerInGame();
+			}
+		}
 	}
 	
 	
@@ -323,6 +335,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	public void displayMenu() { //displays menu screen here
 		System.out.println("Main menu entered.");
 		removeAll();
+		mainMenuScreen.setSize(1600, 900);
 		add(mainMenuScreen);
 		add(singlePlayerButton);
 		add(coopButton);
@@ -359,8 +372,12 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	    add(singlePlayerTank,singlePlayerTankStartingXCoord,singlePlayerTankStartingYCoord);
 	    singlePlayerScores.add(0);
 	    gameNumber++;
+	    timerLabel.setFont("AgencyFB-Bold-42");
+	    add(timerLabel);
 		singlePlayerScoreLabel.setFont("AgencyFB-Bold-40");
 	    add(singlePlayerScoreLabel);
+	    singlePlayerHealthLabel.setFont("AgencyFB-Bold-40");
+	    add(singlePlayerHealthLabel);
 	   
 	}
 	
@@ -569,7 +586,21 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	public void displayScoreInGame() { //displays the score board in game
 		singlePlayerScoreLabel.setLabel("Score: " + singlePlayerScores.get(gameNumber));
 		add(singlePlayerScoreLabel);
-
+		
+	}
+	
+	public void displayTimerInGame() { //displays the time left in game
+		timerLabel.setLabel("Time Left: " + gameTime);
+		add(timerLabel);
+	}
+	
+	public void decreaseHealth() { //Calculates the health of the user
+		singlePlayerTankHealth--;
+	}
+	
+	public void displayHealthInGame() { //displays the health in game.
+		singlePlayerHealthLabel.setLabel("Health: " + singlePlayerTankHealth);
+		add(singlePlayerHealthLabel);
 	}
 	
 	public void pasteEnemies() {
