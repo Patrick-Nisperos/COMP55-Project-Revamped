@@ -6,7 +6,7 @@ public class Projectile {
 	private int speed;
 	private int height;
 	private int width;
-	private GImage projectilePic=new GImage("projectile px.png");
+	private GImage projectilePic = new GImage("projectile px.png");
 	
 	public Projectile(int speed,int height,int width) {
 		this.speed=speed;

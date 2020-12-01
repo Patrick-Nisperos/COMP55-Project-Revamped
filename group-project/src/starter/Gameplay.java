@@ -59,6 +59,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private Timer scoreboardScreenTimer = new Timer(1000,this);
 	private Timer gameTimer = new Timer(1000, this); //used to time in game, if run out, then you lose.
 	private Timer animationTimer = new Timer(1000, this);
+	private Timer enemyFireTimer = new Timer(1000000000, this);
 
 	
 	//List of lists of shields and enemies and enemy movement
@@ -86,6 +87,9 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private GImage Shield1 = new GImage("Rock px.png", 250, 650);
 	private GImage Shield2 = new GImage("Rock px.png", 1150, 650);
 	private ArrayList<GImage> enemyImages = new ArrayList<GImage>();
+	
+	
+	private int enemyHitCount = 0;
 	    
 	//Pictures and integers for the animation
 	private GImage explode1 = new GImage("Explosion1.png", 100, 200);
@@ -217,8 +221,6 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 				singlePlayerUserFire();
 				singlePlayerFireNumber = 0;
 			}
-
-
 		}
 	}	
 	
@@ -275,11 +277,16 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			enemyMovement();
 			singlePlayerMoveProjectile();
 			singlePlayerObjHit();
-			if(enemyImages.isEmpty() && pauseTimer.isRunning() == false) {
-				userWin();
-			}
 			displayHealthInGame();
+			if(enemyHitCount==30) {
+				userWin();
+				enemyHitCount=0;
+			}
 		}
+		//if(enemyFireTimer.isRunning()) { //needs to be updated
+			//enemyFire();
+			//();
+		//}
 		if(animationTimer.isRunning()) {
 			animateNumber++;
 			if(animateNumber % 7 == 6) {
@@ -350,6 +357,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		gameTimer.start();
 		singlePlayerTimer.start();
 		animationTimer.start();
+		enemyFireTimer.start();
 		System.out.println("Single player mode entered.");
 		removeAll(); //Removes everything from screen.
 		
@@ -431,6 +439,9 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	public void userWin() { //displays the screen when the user wins
 		System.out.println("User Win Entered");
 		removeAll(); //Removes everything from screen.
+		enemyRectangles.clear();
+		enemyImages.clear();
+		singlePlayerProjectiles.clear();
 		winScreen.setSize(1600,900);
 		add(winScreen);
 	}
@@ -477,9 +488,9 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	}
 	
 	public void enemyFire() { //controls the enemy fire mechanics
-		Projectile temp = new Projectile(5, 50, 40);
 		for(GImage tempImage : enemyImages) {
 			if(canEnemyFire(tempImage)) {
+				Projectile temp = new Projectile(5, 50, 40);
 				temp.setCoord(tempImage.getX(), tempImage.getY());
 				add(temp.getProjectilePic());
 				enemyProjectiles.add(temp);
@@ -494,18 +505,37 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		}
 	}
 	public boolean canEnemyFire(GImage x) { //Checks if the enemy can fire , whether or not there is an enemy in front
-		for(GImage tempImage : enemyImages) {
-			if(x.getX() == tempImage.getX() && x.getY() == tempImage.getY()) {
-				continue;
+		boolean canFire = false;
+		if(x.getY() == 50) {
+			for(GImage tempImage : enemyImages) {
+				if(x.getX() == tempImage.getX() && tempImage.getY() == 150) {
+					canFire = false;
+					break;
+				}
+				if(x.getX() == tempImage.getX() && tempImage.getY() == 250) {
+					canFire = false;
+					break;
+				}else {
+					canFire = true;
+				}
 			}
-			if(x.getX() == tempImage.getX() && x.getY() < tempImage.getY()) {
-				return false;
-			}
-			if(x.getX() == tempImage.getX() && x.getY() > tempImage.getY()) {
-				return true;
-			}
+			return canFire;
 		}
-		return false;
+		if(x.getY() == 150) {
+			for(GImage tempImage : enemyImages) {
+				if(x.getX() == tempImage.getX() && tempImage.getY() == 250) {
+					canFire = false;
+					break;
+				}else {
+					canFire = true;
+				}
+			}
+			return canFire;
+		}
+		if(x.getY() == 250) {
+			return true;
+		}
+		return canFire;
 	}
 	
 	public void singlePlayerObjHit() {
@@ -514,15 +544,25 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			double coordX=temp.getProjectilePic().getX()+temp.getProjectilePic().getWidth()+1;
 			double coordY=temp.getProjectilePic().getY()+(temp.getProjectilePic().getHeight()/2);
 			if(getElementAt(coordX,coordY) instanceof GImage) {
-				for(GImage temp2 : enemyImages) {
-					if(temp2==getElementAt(coordX,coordY)) {
-						remove(temp2);
+				//for(GImage temp2 : enemyImages) {
+					for(int k=0;k<enemyImages.size();k++) {
+						
+					
+					if(enemyImages.get(k)==getElementAt(coordX,coordY)) {
+						remove(enemyImages.get(k));
+						enemyImages.remove(k);
+						
+						//enemyImages.remove(getElementAt(coordX,coordY));
+						//enemyRectangles.remove(getElementAt(coordX,coordY));
+
 						remove(temp.getProjectilePic());
 						animateHit(coordX, coordY);
 						singlePlayerProjectiles.remove(temp);
+						enemyHitCount++;
 						calculateScore();
 						displayScoreInGame();
 					
+						System.out.println(enemyImages.size());
 					}
 				}
 				if(getElementAt(coordX,coordY)==Shield1) {
