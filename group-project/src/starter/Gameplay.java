@@ -123,6 +123,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private boolean levelOneRepeat = false;
 	private boolean levelTwoRepeat = false;
 	private int userLevel = 1;
+	private GLabel levelLabel = new GLabel("Level #", 1450, 30);
 	
 	
 	public void init() {
@@ -535,6 +536,11 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	    add(singlePlayerScoreLabel);
 	    singlePlayerHealthLabel.setFont("AgencyFB-Bold-40");
 	    add(singlePlayerHealthLabel);
+	    levelLabel.setLabel("Level # " + userLevel);
+	    levelLabel.setFont("AgencyFB-Bold-30");
+	    levelLabel.setColor(Color.GREEN);
+	    add(levelLabel);
+	    
 	   
 	}
 	
