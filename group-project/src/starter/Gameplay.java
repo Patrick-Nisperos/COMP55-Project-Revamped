@@ -341,7 +341,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 				userWin();
 				
 			}
-			if(gameTime == 0) { //Track user loss
+			if(gameTime == 0 || singlePlayerTankHealth == 0) { //Track user loss
 				singlePlayerTimer.stop();
 				gameTimer.stop();
 				gameTime = 80;
@@ -460,6 +460,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	}
 	
 	public void singlePlayerMode(int levelNumber) {
+		singlePlayerTankHealth = 10;
 		gameTimer.start();
 	    gameNumber++;
 		singlePlayerTimer.start();
