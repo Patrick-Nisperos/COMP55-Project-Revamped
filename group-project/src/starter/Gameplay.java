@@ -102,7 +102,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private ArrayList<GImage> enemyImages = new ArrayList<GImage>();
 	
 	
-	private int enemyHitCount = 0;
+	private int enemyHitCount = 29;
 	    
 	//Pictures and integers for the animation
 	private GImage explode1 = new GImage("Explosion1.png", 100, 200);
@@ -116,7 +116,11 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private int singlePlayerFireNumber = 0; //used for user fire delay
 	private int gameTime = 80; 
 	private int gameTimeAmount = 0; //used for game time delay
-
+	
+	//level tracking variables
+	private boolean levelOneRepeat = false;
+	private boolean levelTwoRepeat = false;
+	private int userLevel = 1;
 	
 	
 	public void init() {
@@ -278,7 +282,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			if(singlePlayerButtonPressed) {
 				mainMenuTimer.stop();
 				singlePlayerButtonPressed = false;
-				singlePlayerMode();
+				singlePlayerMode(userLevel);
 			}
 			if(coopButtonPressed) {
 				mainMenuTimer.stop();
@@ -399,7 +403,10 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			if(winNextLevelPressed) {
 				winScreenTimer.stop();
 				winNextLevelPressed = false;
-				singlePlayerMode(); //Make sure this becomes the next level
+				if(userLevel != 3) {
+					userLevel++;
+				}
+				singlePlayerMode(userLevel); //Make sure this becomes the next level
 			}
 		}
 		//Lose screen button recognition
@@ -412,7 +419,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			if(loseRetryPressed) {
 				loseScreenTimer.stop();
 				loseRetryPressed = false;
-				singlePlayerMode();
+				singlePlayerMode(userLevel);
 			}
 		}
 		//game timer
@@ -445,25 +452,67 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		
 	}
 	
-	public void singlePlayerMode() {
+	public void singlePlayerMode(int levelNumber) {
 		gameTimer.start();
+	    gameNumber++;
 		singlePlayerTimer.start();
 		animationTimer.start();
 		enemyFireTimer.start();
 		System.out.println("Single player mode entered.");
 		removeAll(); //Removes everything from screen.
-		
+		System.out.println(enemyImages.size());
+		System.out.println(enemyRectangles.size());
+		if(gameNumber >= 1) { //game number 1 is actually the 2nd game already. because gameNumber initialized at -1.
+			levelOneRepeat = true;
+		}
 		//Level one initialize
-		levelOneBackground1.setSize(1600,900);
-		levelOneBackground2.setSize(1600,900);
-		levelOneBackground1.setLocation(0,0);
-		levelOneBackground2.setLocation(1600,0);
-		add(levelOneBackground1);
-		add(levelOneBackground2);
-		levelOne.initLevel();
-		levelOne.printArrayList();
-		enemyRectangles = levelOne.createEnemyRect();
-		enemyImages = levelOne.createEnemyImages();
+		if(levelNumber == 1 && levelOneRepeat == false) {
+			levelOneBackground1.setSize(1600,900);
+			levelOneBackground2.setSize(1600,900);
+			levelOneBackground1.setLocation(0,0);
+			levelOneBackground2.setLocation(1600,0);
+			levelOne.initLevel();
+			levelOne.printArrayList();
+			System.out.println("level one was initialized");
+
+		}
+		if(levelNumber == 1) {
+			add(levelOneBackground1);
+			add(levelOneBackground2);
+			enemyRectangles = levelOne.createEnemyRect();
+			enemyImages = levelOne.createEnemyImages();
+			userLevel = 1;
+		}
+		if(levelNumber == 2 && levelTwoRepeat == false) {
+			levelOneBackground1.setSize(1600,900);
+			levelOneBackground2.setSize(1600,900);
+			levelOneBackground1.setLocation(0,0);
+			levelOneBackground2.setLocation(1600,0);
+			levelTwo.initLevel();
+			levelTwo.printArrayList();
+			System.out.println("level two was initialized");
+		}
+		if(levelNumber == 2) {
+			enemyHitCount = -10; // 10 extra hits for the medium enemies in the 3rd row
+			add(levelOneBackground1);
+			add(levelOneBackground2);
+			enemyRectangles = levelTwo.createEnemyRect();
+			enemyImages = levelTwo.createEnemyImages();
+		}
+		if(levelNumber == 3) {
+			enemyHitCount = -30; // 10 extra for 2nd row, 20 extra for 3rd row
+			levelOneBackground1.setSize(1600,900);
+			levelOneBackground2.setSize(1600,900);
+			levelOneBackground1.setLocation(0,0);
+			levelOneBackground2.setLocation(1600,0);
+			levelThree.initLevel();
+			levelThree.printArrayList();
+			System.out.println("level three was initialized");
+			add(levelOneBackground1);
+			add(levelOneBackground2);
+			enemyRectangles = levelThree.createEnemyRect();
+			enemyImages = levelThree.createEnemyImages();
+		}
 		pasteEnemyImages();
 		pasteEnemies();
 		System.out.println("Size of GRect Array: " + enemyRectangles.size());
@@ -471,7 +520,6 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		pasteShields();
 	    add(singlePlayerTank,singlePlayerTankStartingXCoord,singlePlayerTankStartingYCoord);
 	    singlePlayerScores.add(0);
-	    gameNumber++;
 	    timerLabel.setFont("AgencyFB-Bold-42");
 	    add(timerLabel);
 		singlePlayerScoreLabel.setFont("AgencyFB-Bold-40");

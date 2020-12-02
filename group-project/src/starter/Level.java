@@ -124,6 +124,8 @@ public class Level {
 				if(i < 10) { //layer one
 					Enemy medium = new Enemy(typeMedium, false, 80 + (80 * tempX), 50 , enemyProjectile);
 					enemies.add(medium);
+					Enemy medium1 = new Enemy(typeMedium, false, 80 + (80 * tempX), 50 , enemyProjectile); //1 extra health
+					enemies.add(medium1);
 					if(tempX == 10) {
 						tempX = 0;
 					}
@@ -154,12 +156,18 @@ public class Level {
 				if(i < 10) { //layer one
 					Enemy heavy = new Enemy(typeHeavy, false, 80 + (80 * tempX), 50 , enemyProjectile);
 					enemies.add(heavy);
+					Enemy heavy1 = new Enemy(typeHeavy, false, 80 + (80 * tempX), 50 , enemyProjectile); //1 extra health
+					enemies.add(heavy1);
+					Enemy heavy2 = new Enemy(typeHeavy, false, 80 + (80 * tempX), 50 , enemyProjectile); //1 extra health
+					enemies.add(heavy2);
 					if(tempX == 10) {
 						tempX = 0;
 					}
 				} if(i > 9 && i < 20) { //layer two
-					Enemy medium = new Enemy(typeMedium, false, 80 + (80 * tempX), 150 , enemyProjectile);
+					Enemy medium = new Enemy(typeMedium, false, 80 + (80 * tempX), 150 , enemyProjectile); 
 					enemies.add(medium);
+					Enemy medium1 = new Enemy(typeMedium, false, 80 + (80 * tempX), 150 , enemyProjectile); //1 extra health
+					enemies.add(medium1);
 					if(tempX == 10) {
 						tempX = 0;
 					}
