@@ -38,6 +38,12 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private GRect resumeButton = new GRect(860, 215, 220, 50);
 	private GRect controlReturnMainMenuButton = new GRect(1240,780,280,50); //control screen return main menu button
 	private GRect scoreReturnMainMenuButton = new GRect(1240,780,280,50); //scoreboard screen return main menu button
+	private GRect winReturnMainMenuButton = new GRect(380, 220, 280, 60);
+	private GRect winScoreboardButton = new GRect(1000, 220, 290, 60);
+	private GRect winNextLevelButton = new GRect(685, 220, 270, 60);
+	private GRect loseReturnMainMenuButton = new GRect(480, 220, 280, 60);
+	private GRect loseRetryButton = new GRect(860, 220, 200, 60);
+	
 	
 	//List of booleans for buttons
 	private boolean singlePlayerButtonPressed = false;
@@ -50,6 +56,11 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private boolean exitButtonPressed = false;
 	private boolean controlReturnMainMenuPressed = false;
 	private boolean scoreReturnMainMenuPressed = false;
+	private boolean winReturnMainMenuPressed = false;
+	private boolean winScoreboardPressed = false;
+	private boolean winNextLevelPressed = false;
+	private boolean loseReturnMainMenuPressed = false;
+	private boolean loseRetryPressed = false;
 	
 	//List of different timers
 	private Timer mainMenuTimer = new Timer(1000, this);
@@ -57,7 +68,9 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private Timer singlePlayerTimer = new Timer(50, this);
 	private Timer controlScreenTimer = new Timer(1000, this);
 	private Timer scoreboardScreenTimer = new Timer(1000,this);
-	private Timer gameTimer = new Timer(1000, this); //used to track if user is in game
+	private Timer loseScreenTimer = new Timer(1000,this);
+	private Timer winScreenTimer = new Timer(1000,this);
+	private Timer gameTimer = new Timer(1000, this); //used to time in game, if run out, then you lose.
 	private Timer animationTimer = new Timer(1000, this);
 	private Timer enemyFireTimer = new Timer(1000000000, this);
 
@@ -67,16 +80,18 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private ArrayList<GRect> playerShields = new ArrayList<GRect>();
 	private int enemyMovementSpeed = -4;
 	
-	//List of Single player tank movement variables, score, and image
+	//List of Single player tank movement variables, score, health, and image
 	private GImage singlePlayerTank = new GImage("blue tank.png");
 	private int singlePlayerTankStartingXCoord = 800;
-	private int singlePlayerTankStartingYCoord = 800 ;
+	private int singlePlayerTankStartingYCoord = 750;
 	private int singlePlayerArrIndex = 0;
 	private int singlePlayerSpeedX = 6; 
 	private ArrayList<Integer> singlePlayerScores = new ArrayList<Integer>();
 	private int gameNumber = -1;
-	private GLabel singlePlayerScoreLabel = new GLabel("Score: ", 30, 600);
-	
+	private GLabel singlePlayerScoreLabel = new GLabel("Score: ", 30, 880);
+	private int singlePlayerTankHealth = 10;
+	private GLabel singlePlayerHealthLabel = new GLabel("Health: ", 1350, 880);
+	private GLabel timerLabel = new GLabel("Time Left: ", 650, 880);
 	private ArrayList<Projectile> singlePlayerProjectiles = new ArrayList<Projectile>();
 	private ArrayList<Projectile> enemyProjectiles = new ArrayList<Projectile>();
 
@@ -99,6 +114,14 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private int explodeNumber = 0;
 	private int animateNumber = 0;
 	private int singlePlayerFireNumber = 0; //used for user fire delay
+	private int gameTime = 80; 
+	private int gameTimeAmount = 0; //used for game time delay
+	
+	//level tracking variables
+	private boolean levelOneRepeat = false;
+	private boolean levelTwoRepeat = false;
+	private int userLevel = 1;
+	
 	
 	public void init() {
 		setSize(PROGRAM_WIDTH, PROGRAM_HEIGHT);
@@ -175,19 +198,53 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			}
 		}
 		
+		if(winScreenTimer.isRunning()) {
+			//win screen return to main menu button.
+			if(e.getX() < winReturnMainMenuButton.getX() + winReturnMainMenuButton.getWidth() && e.getX() >= winReturnMainMenuButton.getX() 
+					&& e.getY() < winReturnMainMenuButton.getY() + winReturnMainMenuButton.getHeight() &&
+					e.getY() >= winReturnMainMenuButton.getY()) {
+				winReturnMainMenuPressed = true;
+			} //win screen next level button.
+			if(e.getX() < winNextLevelButton.getX() + winNextLevelButton.getWidth() && e.getX() >= winNextLevelButton.getX() 
+					&& e.getY() < winNextLevelButton.getY() + winNextLevelButton.getHeight() &&
+					e.getY() >= winNextLevelButton.getY()) {
+				winNextLevelPressed = true;
+			} //win screen scoreboard button.
+			if(e.getX() < winScoreboardButton.getX() + winScoreboardButton.getWidth() && e.getX() >= winScoreboardButton.getX() 
+					&& e.getY() < winScoreboardButton.getY() + winScoreboardButton.getHeight() &&
+					e.getY() >= winScoreboardButton.getY()) {
+				winScoreboardPressed = true;
+			}
+		}
+		
+		if(loseScreenTimer.isRunning()) {
+			//lose screen return to main menu button
+			if(e.getX() < loseReturnMainMenuButton.getX() + loseReturnMainMenuButton.getWidth() && e.getX() >= loseReturnMainMenuButton.getX() 
+					&& e.getY() < loseReturnMainMenuButton.getY() + loseReturnMainMenuButton.getHeight() &&
+					e.getY() >= loseReturnMainMenuButton.getY()) {
+				loseReturnMainMenuPressed = true;
+			} //lose screen retry button
+			if(e.getX() < loseRetryButton.getX() + loseRetryButton.getWidth() && e.getX() >= loseRetryButton.getX() 
+					&& e.getY() < loseRetryButton.getY() + loseRetryButton.getHeight() &&
+					e.getY() >= loseRetryButton.getY()) {
+				loseRetryPressed = true;
+			}
+		}
+		
+		
 		return;
 	}
 	
 	//Key Input Listeners
 	public void keyPressed(KeyEvent e) {
-		if(gameTimer.isRunning()) {
-			if (e.getKeyCode() == 27) {
-				System.out.println("You pressed *esc* ");
-				singlePlayerTimer.start();
-				pauseGame();
-			}
-		}
-		//Single Player Tank Movement and Fire
+//		if(gameTimer.isRunning()) {
+//			if (e.getKeyCode() == 27) {
+//				System.out.println("You pressed *esc* ");
+//				singlePlayerTimer.start();
+//				pauseGame();
+//			}
+//		}
+//		//Single Player Tank Movement and Fire
 	     if(singlePlayerTimer.isRunning()) {
 			int moveKeyCode = e.getKeyCode();
 	        if(moveKeyCode == 68){ //"d" right movement
@@ -225,7 +282,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			if(singlePlayerButtonPressed) {
 				mainMenuTimer.stop();
 				singlePlayerButtonPressed = false;
-				singlePlayerMode();
+				singlePlayerMode(userLevel);
 			}
 			if(coopButtonPressed) {
 				mainMenuTimer.stop();
@@ -236,7 +293,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 				gameTimer.stop();
 				mainMenuTimer.stop();
 				scoreBoardButtonPressed = false;
-				displayScoreBoard();
+				displayScoreboard();
 			}
 			if(controlButtonPressed) {
 				gameTimer.stop();
@@ -251,35 +308,44 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	
 		}		
 		//pause screen button recognition 
-		if(pauseTimer.isRunning()) {
-			if(pauseReturnMainMenuPressed) {
-				singlePlayerTimer.stop();
-				gameTimer.stop();
-				pauseTimer.stop();
-				pauseReturnMainMenuPressed = false;
-				displayMenu();
-			}
-			if(resumeButtonPressed) {
-				pauseTimer.stop();
-				singlePlayerTimer.stop();
-				gameTimer.stop();
-				//Temporary here, later we must figure out how to resume a game properly.
-				singlePlayerMode();
-
-			}
-			
-		}
+//		if(pauseTimer.isRunning()) {
+//			if(pauseReturnMainMenuPressed) {
+//				singlePlayerTimer.stop();
+//				gameTimer.stop();
+//				pauseTimer.stop();
+//				pauseReturnMainMenuPressed = false;
+//				displayMenu();
+//			}
+//			if(resumeButtonPressed) {
+//				pauseTimer.stop();
+//				singlePlayerTimer.stop();
+//				gameTimer.stop();
+//				//Temporary here, later we must figure out how to resume a game properly.
+//				singlePlayerMode();
+//			}
+//		}
 		if(singlePlayerTimer.isRunning()) {
 			enemyMovement();
 			singlePlayerMoveProjectile();
 			singlePlayerObjHit();
-		if(enemyHitCount==30) {
-			userWin();
-			enemyHitCount=0;
-		}
-//			if(enemyImages.isEmpty() && pauseTimer.isRunning() == false) {
-//				userWin();
-//			}
+			displayHealthInGame();
+			if(enemyHitCount==30) { // Track user win
+				gameTimer.stop();
+				singlePlayerTimer.stop();
+				gameTime = 80;
+				enemyHitCount=0;
+				winScreenTimer.start();
+				userWin();
+				
+			}
+			if(gameTime == 0) { //Track user loss
+				singlePlayerTimer.stop();
+				gameTimer.stop();
+				gameTime = 80;
+				enemyHitCount = 0;
+				loseScreenTimer.start();
+				userLose();
+			}
 		}
 		//if(enemyFireTimer.isRunning()) {
 		//	enemyFire();
@@ -322,7 +388,49 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 				displayMenu();
 			}
 		}
-		
+		//Win screen button recognition
+		if(winScreenTimer.isRunning()) {
+			if(winReturnMainMenuPressed) {
+				winScreenTimer.stop();
+				winReturnMainMenuPressed = false;
+				displayMenu();
+			}
+			if(winScoreboardPressed) {
+				winScreenTimer.stop();
+				winScoreboardPressed = false;
+				displayScoreboard();
+			}
+			if(winNextLevelPressed) {
+				winScreenTimer.stop();
+				winNextLevelPressed = false;
+				if(userLevel != 3) {
+					userLevel++;
+				}
+				singlePlayerMode(userLevel); //Make sure this becomes the next level
+			}
+		}
+		//Lose screen button recognition
+		if(loseScreenTimer.isRunning()) {
+			if(loseReturnMainMenuPressed) {
+				loseScreenTimer.stop();
+				loseReturnMainMenuPressed = false;
+				displayMenu();
+			}
+			if(loseRetryPressed) {
+				loseScreenTimer.stop();
+				loseRetryPressed = false;
+				singlePlayerMode(userLevel);
+			}
+		}
+		//game timer
+		if(gameTimer.isRunning()) {
+			gameTimeAmount++;
+			if(gameTimeAmount == 21) {
+				gameTime--;
+				gameTimeAmount = 0;
+				displayTimerInGame();
+			}
+		}
 	}
 	
 	
@@ -333,6 +441,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	public void displayMenu() { //displays menu screen here
 		System.out.println("Main menu entered.");
 		removeAll();
+		mainMenuScreen.setSize(1600, 900);
 		add(mainMenuScreen);
 		add(singlePlayerButton);
 		add(coopButton);
@@ -343,25 +452,67 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		
 	}
 	
-	public void singlePlayerMode() {
+	public void singlePlayerMode(int levelNumber) {
 		gameTimer.start();
+	    gameNumber++;
 		singlePlayerTimer.start();
 		animationTimer.start();
 		enemyFireTimer.start();
 		System.out.println("Single player mode entered.");
 		removeAll(); //Removes everything from screen.
-		
+		System.out.println(enemyImages.size());
+		System.out.println(enemyRectangles.size());
+		if(gameNumber >= 1) { //game number 1 is actually the 2nd game already. because gameNumber initialized at -1.
+			levelOneRepeat = true;
+		}
 		//Level one initialize
-		levelOneBackground1.setSize(1600,900);
-		levelOneBackground2.setSize(1600,900);
-		levelOneBackground1.setLocation(0,0);
-		levelOneBackground2.setLocation(1600,0);
-		add(levelOneBackground1);
-		add(levelOneBackground2);
-		levelOne.initLevel();
-		levelOne.printArrayList();
-		enemyRectangles = levelOne.createEnemyRect();
-		enemyImages = levelOne.createEnemyImages();
+		if(levelNumber == 1 && levelOneRepeat == false) {
+			levelOneBackground1.setSize(1600,900);
+			levelOneBackground2.setSize(1600,900);
+			levelOneBackground1.setLocation(0,0);
+			levelOneBackground2.setLocation(1600,0);
+			levelOne.initLevel();
+			levelOne.printArrayList();
+			System.out.println("level one was initialized");
+
+		}
+		if(levelNumber == 1) {
+			add(levelOneBackground1);
+			add(levelOneBackground2);
+			enemyRectangles = levelOne.createEnemyRect();
+			enemyImages = levelOne.createEnemyImages();
+			userLevel = 1;
+		}
+		if(levelNumber == 2 && levelTwoRepeat == false) {
+			levelOneBackground1.setSize(1600,900);
+			levelOneBackground2.setSize(1600,900);
+			levelOneBackground1.setLocation(0,0);
+			levelOneBackground2.setLocation(1600,0);
+			levelTwo.initLevel();
+			levelTwo.printArrayList();
+			System.out.println("level two was initialized");
+		}
+		if(levelNumber == 2) {
+			enemyHitCount = -10; // 10 extra hits for the medium enemies in the 3rd row
+			add(levelOneBackground1);
+			add(levelOneBackground2);
+			enemyRectangles = levelTwo.createEnemyRect();
+			enemyImages = levelTwo.createEnemyImages();
+		}
+		if(levelNumber == 3) {
+			enemyHitCount = -30; // 10 extra for 2nd row, 20 extra for 3rd row
+			levelOneBackground1.setSize(1600,900);
+			levelOneBackground2.setSize(1600,900);
+			levelOneBackground1.setLocation(0,0);
+			levelOneBackground2.setLocation(1600,0);
+			levelThree.initLevel();
+			levelThree.printArrayList();
+			System.out.println("level three was initialized");
+			add(levelOneBackground1);
+			add(levelOneBackground2);
+			enemyRectangles = levelThree.createEnemyRect();
+			enemyImages = levelThree.createEnemyImages();
+		}
 		pasteEnemyImages();
 		pasteEnemies();
 		System.out.println("Size of GRect Array: " + enemyRectangles.size());
@@ -369,9 +520,12 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		pasteShields();
 	    add(singlePlayerTank,singlePlayerTankStartingXCoord,singlePlayerTankStartingYCoord);
 	    singlePlayerScores.add(0);
-	    gameNumber++;
+	    timerLabel.setFont("AgencyFB-Bold-42");
+	    add(timerLabel);
 		singlePlayerScoreLabel.setFont("AgencyFB-Bold-40");
 	    add(singlePlayerScoreLabel);
+	    singlePlayerHealthLabel.setFont("AgencyFB-Bold-40");
+	    add(singlePlayerHealthLabel);
 	   
 	}
 	
@@ -389,7 +543,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 
 	}
 	
-	public void displayScoreBoard() { //Displays the scoreboard
+	public void displayScoreboard() { //Displays the scoreboard
 		scoreboardScreenTimer.start();
 		System.out.println("Scoreboard entered.");
 		removeAll(); //Removes everything from screen.
@@ -430,10 +584,22 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		singlePlayerProjectiles.clear();
 		winScreen.setSize(1600,900);
 		add(winScreen);
+		add(winReturnMainMenuButton);
+		add(winScoreboardButton);
+		add(winNextLevelButton);
+
 	}
 	
 	public void userLose() { //displays the screen when the user loses
-		
+		System.out.println("User Lose Entered");
+		removeAll(); //Removes everything from screen.
+		enemyRectangles.clear();
+		enemyImages.clear();
+		singlePlayerProjectiles.clear();
+		loseScreen.setSize(1600,900);
+		add(loseScreen);
+		add(loseReturnMainMenuButton);
+		add(loseRetryButton);
 	}
 	
 	public void userMovement() { //controls the user movement mechanics
@@ -612,7 +778,21 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	public void displayScoreInGame() { //displays the score board in game
 		singlePlayerScoreLabel.setLabel("Score: " + singlePlayerScores.get(gameNumber));
 		add(singlePlayerScoreLabel);
-
+		
+	}
+	
+	public void displayTimerInGame() { //displays the time left in game
+		timerLabel.setLabel("Time Left: " + gameTime);
+		add(timerLabel);
+	}
+	
+	public void decreaseHealth() { //Calculates the health of the user
+		singlePlayerTankHealth--;
+	}
+	
+	public void displayHealthInGame() { //displays the health in game.
+		singlePlayerHealthLabel.setLabel("Health: " + singlePlayerTankHealth);
+		add(singlePlayerHealthLabel);
 	}
 	
 	public void pasteEnemies() {
