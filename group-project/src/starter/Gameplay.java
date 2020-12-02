@@ -103,6 +103,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	
 	
 	private int enemyHitCount = 0;
+	private int enemyFireDelay = 0;
 	    
 	//Pictures and integers for the animation
 	private GImage explode1 = new GImage("Explosion1.png", 100, 200);
@@ -348,7 +349,11 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			}
 		}
 		if(enemyFireTimer.isRunning()) {
-			enemyFire();
+			enemyFireDelay++;
+			if(enemyFireDelay == 100) {
+				enemyFire();
+				enemyFireDelay = 0;
+			}
 			enemyProjectileMovement();
 		}
 		if(animationTimer.isRunning()) {
@@ -642,7 +647,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	public void enemyFire() { //controls the enemy fire mechanics
 		for(GImage tempImage : enemyImages) {
 			if(canEnemyFire(tempImage)) {
-				Projectile temp = new Projectile(5, 50, 40);
+				Projectile temp = new Projectile(8, 50, 40);
 				temp.setCoord(tempImage.getX(), tempImage.getY());
 				add(temp.getProjectilePic());
 				enemyProjectiles.add(temp);
