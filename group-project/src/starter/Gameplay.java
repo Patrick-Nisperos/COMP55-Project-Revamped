@@ -116,7 +116,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private int explodeNumber = 0;
 	private int animateNumber = 0;
 	private int singlePlayerFireNumber = 0; //used for user fire delay
-	private int gameTime = 80; 
+	private int gameTime = 100; 
 	private int gameTimeAmount = 0; //used for game time delay
 	
 	//level tracking variables
@@ -335,7 +335,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			if(enemyHitCount==30) { // Track user win
 				gameTimer.stop();
 				singlePlayerTimer.stop();
-				gameTime = 80;
+				gameTime = 100;
 				enemyHitCount=0;
 				winScreenTimer.start();
 				userWin();
@@ -344,7 +344,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			if(gameTime == 0 || singlePlayerTankHealth == 0) { //Track user loss
 				singlePlayerTimer.stop();
 				gameTimer.stop();
-				gameTime = 80;
+				gameTime = 100;
 				enemyHitCount = 0;
 				loseScreenTimer.start();
 				userLose();
@@ -360,8 +360,9 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		}
 		if(animationTimer.isRunning()) {
 			animateNumber++;
-			if(animateNumber % 7 == 6) {
+			if(animateNumber % 7 == 3) {
 				deleteUserFirePic();
+				deleteEnemyFirePic();
 			}
 			if(animateNumber == 20) {
 				deleteEnemyExplosion();
@@ -660,7 +661,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 				temp.setCoord(tempImage.getX(), tempImage.getY());
 				add(temp.getEnemyProjectilePic());
 				enemyProjectiles.add(temp);
-				enemyFirePic.setLocation(tempImage.getX(), tempImage.getY());
+				enemyFirePic.setLocation(tempImage.getX() - 10, tempImage.getY() + 20);
 				enemyMuzzleImages.add(enemyFirePic);
 				add(enemyFirePic);
 			}
@@ -759,19 +760,11 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 					
 					if(singlePlayerTank==getElementAt(coordX,coordY)) {
 						decreaseHealth();
-						//enemyImages.remove(k);
-						
-						//enemyImages.remove(getElementAt(coordX,coordY));
-						//enemyRectangles.remove(getElementAt(coordX,coordY));
+
 
 						remove(temp.getEnemyProjectilePic());
 						animateHit(coordX, coordY);
 						enemyProjectiles.remove(temp);
-//						enemyHitCount++;
-//						calculateScore();
-//						displayScoreInGame();
-					
-//						System.out.println(enemyImages.size());
 					}
 				}
 				if(getElementAt(coordX,coordY)==Shield1) {
@@ -824,6 +817,14 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	
 	public void deleteUserFirePic() {
 		remove(userFirePic);
+	}
+	
+	public void deleteEnemyFirePic() {
+		for (int i = 0; i < enemyMuzzleImages.size(); i++) {
+			GImage temp = enemyMuzzleImages.get(i);
+			remove(temp);
+			enemyMuzzleImages.remove(temp);
+		}
 	}
 	
 	public void calculateScore() { //calculates the score of the user
