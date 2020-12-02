@@ -115,7 +115,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private int explodeNumber = 0;
 	private int animateNumber = 0;
 	private int singlePlayerFireNumber = 0; //used for user fire delay
-	private int gameTime = 1; 
+	private int gameTime = 80; 
 	private int gameTimeAmount = 0; //used for game time delay
 	
 	//level tracking variables
