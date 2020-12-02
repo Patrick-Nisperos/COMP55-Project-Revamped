@@ -115,7 +115,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private int explodeNumber = 0;
 	private int animateNumber = 0;
 	private int singlePlayerFireNumber = 0; //used for user fire delay
-	private int gameTime = 80; 
+	private int gameTime = 1; 
 	private int gameTimeAmount = 0; //used for game time delay
 	
 	//level tracking variables
@@ -592,7 +592,9 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		add(winReturnMainMenuButton);
 		add(winScoreboardButton);
 		add(winNextLevelButton);
-
+		GLabel scoreLabel = new GLabel(" " + singlePlayerScores.get(gameNumber),700,350);
+		scoreLabel.setFont("AgencyFB-BOLD-50");
+		add(scoreLabel);
 	}
 	
 	public void userLose() { //displays the screen when the user loses
@@ -605,6 +607,9 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		add(loseScreen);
 		add(loseReturnMainMenuButton);
 		add(loseRetryButton);
+		GLabel scoreLabel = new GLabel(" " + singlePlayerScores.get(gameNumber),700,350);
+		scoreLabel.setFont("AgencyFB-BOLD-50");
+		add(scoreLabel);
 	}
 	
 	public void userMovement() { //controls the user movement mechanics
