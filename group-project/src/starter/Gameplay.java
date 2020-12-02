@@ -347,10 +347,10 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 				userLose();
 			}
 		}
-		//if(enemyFireTimer.isRunning()) {
-		//	enemyFire();
-		//	enemyProjectileMovement();
-		//}
+		if(enemyFireTimer.isRunning()) {
+			enemyFire();
+			enemyProjectileMovement();
+		}
 		if(animationTimer.isRunning()) {
 			animateNumber++;
 			if(animateNumber % 7 == 6) {
