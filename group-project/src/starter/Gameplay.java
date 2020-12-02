@@ -281,10 +281,10 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 //				userWin();
 //			}
 		}
-		//if(enemyFireTimer.isRunning()) { //needs to be updated
-			//enemyFire();
-			//();
-		//}
+		if(enemyFireTimer.isRunning()) {
+			enemyFire();
+			enemyProjectileMovement();
+		}
 		if(animationTimer.isRunning()) {
 			animateNumber++;
 			if(animateNumber % 7 == 6) {
