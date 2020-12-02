@@ -100,6 +100,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private GImage Shield1 = new GImage("Rock px.png", 250, 650);
 	private GImage Shield2 = new GImage("Rock px.png", 1150, 650);
 	private ArrayList<GImage> enemyImages = new ArrayList<GImage>();
+	private ArrayList<GImage> enemyMuzzleImages = new ArrayList<GImage>();
 	
 	
 	private int enemyHitCount = 0;
@@ -110,7 +111,6 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private GImage explode2 = new GImage("Explosion2.png", 100, 200);
 	private GImage explode3 = new GImage("Explosion3.png", 100, 200);
 	private GImage userFirePic = new GImage("userFirePic.png", 100, 200);
-	private GImage enemyFirePic = new GImage("enemy muzzle flash.png");
 	private GImage levelOneBackground1 = new GImage("snow top view.jpg");
 	private GImage levelOneBackground2 = new GImage("snow top view2.jpg");
 	private int explodeNumber = 0;
@@ -460,7 +460,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	}
 	
 	public void singlePlayerMode(int levelNumber) {
-		singlePlayerTankHealth = 10;
+		singlePlayerTankHealth = 5;
 		gameTimer.start();
 	    gameNumber++;
 		singlePlayerTimer.start();
@@ -656,10 +656,12 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		for(GImage tempImage : enemyImages) {
 			if(canEnemyFire(tempImage)) {
 				Projectile temp = new Projectile(8, 50, 40);
+				GImage enemyFirePic = new GImage("enemy muzzle flash.png", 100, 200);
 				temp.setCoord(tempImage.getX(), tempImage.getY());
 				add(temp.getEnemyProjectilePic());
 				enemyProjectiles.add(temp);
 				enemyFirePic.setLocation(tempImage.getX(), tempImage.getY());
+				enemyMuzzleImages.add(enemyFirePic);
 				add(enemyFirePic);
 			}
 		}
