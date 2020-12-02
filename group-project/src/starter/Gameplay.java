@@ -109,6 +109,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private GImage explode2 = new GImage("Explosion2.png", 100, 200);
 	private GImage explode3 = new GImage("Explosion3.png", 100, 200);
 	private GImage userFirePic = new GImage("userFirePic.png", 100, 200);
+	private GImage enemyFirePic = new GImage("enemy muzzle flash.png");
 	private GImage levelOneBackground1 = new GImage("snow top view.jpg");
 	private GImage levelOneBackground2 = new GImage("snow top view2.jpg");
 	private int explodeNumber = 0;
@@ -644,16 +645,16 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			if(canEnemyFire(tempImage)) {
 				Projectile temp = new Projectile(5, 50, 40);
 				temp.setCoord(tempImage.getX(), tempImage.getY());
-				add(temp.getProjectilePic());
+				add(temp.getEnemyProjectilePic());
 				enemyProjectiles.add(temp);
-				userFirePic.setLocation(tempImage.getX(), tempImage.getY());
-				add(userFirePic);
+				enemyFirePic.setLocation(tempImage.getX(), tempImage.getY());
+				add(enemyFirePic);
 			}
 		}
 	}
 	public void enemyProjectileMovement() { //Moves the enemy projectiles
 		for(Projectile temp : enemyProjectiles) {
-			temp.getProjectilePic().move(0, temp.getSpeed());
+			temp.getEnemyProjectilePic().move(0, temp.getSpeed());
 		}
 	}
 	public boolean canEnemyFire(GImage x) { //Checks if the enemy can fire , whether or not there is an enemy in front

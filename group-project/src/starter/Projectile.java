@@ -7,6 +7,7 @@ public class Projectile {
 	private int height;
 	private int width;
 	private GImage projectilePic = new GImage("projectile px.png");
+	private GImage enemyFirePic = new GImage("enemy projectile.png");
 	
 	public Projectile(int speed,int height,int width) {
 		this.speed=speed;
@@ -22,6 +23,9 @@ public class Projectile {
 	public GImage getProjectilePic() {
 		return projectilePic;
 	}
+	public GImage getEnemyProjectilePic() {
+		return enemyFirePic;
+	}
 	
 	public int getSpeed() {
 		return speed;
@@ -31,9 +35,11 @@ public class Projectile {
 	}
 	public void setSize(int height,int width) {
 		projectilePic.setSize(height,width);
+		enemyFirePic.setSize(height, width);
 	}
 	public void setCoord(double xCoord, double yCoord) {
 		projectilePic.setLocation(xCoord, yCoord);
+		enemyFirePic.setLocation(xCoord, yCoord);
 	}
 
 	
