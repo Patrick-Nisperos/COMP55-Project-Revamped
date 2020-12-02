@@ -102,7 +102,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private ArrayList<GImage> enemyImages = new ArrayList<GImage>();
 	
 	
-	private int enemyHitCount = 29;
+	private int enemyHitCount = 0;
 	    
 	//Pictures and integers for the animation
 	private GImage explode1 = new GImage("Explosion1.png", 100, 200);
