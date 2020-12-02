@@ -103,6 +103,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	
 	
 	private int enemyHitCount = 0;
+	private int enemyFireDelay = 0;
 	    
 	//Pictures and integers for the animation
 	private GImage explode1 = new GImage("Explosion1.png", 100, 200);
@@ -329,6 +330,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			enemyMovement();
 			singlePlayerMoveProjectile();
 			singlePlayerObjHit();
+			enemyObjHit();
 			displayHealthInGame();
 			if(enemyHitCount==30) { // Track user win
 				gameTimer.stop();
@@ -349,7 +351,11 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			}
 		}
 		if(enemyFireTimer.isRunning()) {
-			enemyFire();
+			enemyFireDelay++;
+			if(enemyFireDelay == 100) {
+				enemyFire();
+				enemyFireDelay = 0;
+			}
 			enemyProjectileMovement();
 		}
 		if(animationTimer.isRunning()) {
@@ -643,7 +649,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	public void enemyFire() { //controls the enemy fire mechanics
 		for(GImage tempImage : enemyImages) {
 			if(canEnemyFire(tempImage)) {
-				Projectile temp = new Projectile(5, 50, 40);
+				Projectile temp = new Projectile(8, 50, 40);
 				temp.setCoord(tempImage.getX(), tempImage.getY());
 				add(temp.getEnemyProjectilePic());
 				enemyProjectiles.add(temp);
@@ -733,6 +739,49 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			}
 		}
 	}
+	public void enemyObjHit() {
+		for(int i = 0; i < enemyProjectiles.size(); i++) {
+			Projectile temp = enemyProjectiles.get(i);
+			double coordX=temp.getProjectilePic().getX()+temp.getProjectilePic().getWidth()+1;
+			double coordY=temp.getProjectilePic().getY()-(temp.getProjectilePic().getHeight()/2);
+			if(getElementAt(coordX,coordY) instanceof GImage) {
+				//for(GImage temp2 : enemyImages) {
+					//for(int k=0;k<enemyImages.size();k++) {
+						
+					
+					if(singlePlayerTank==getElementAt(coordX,coordY)) {
+						decreaseHealth();
+						//enemyImages.remove(k);
+						
+						//enemyImages.remove(getElementAt(coordX,coordY));
+						//enemyRectangles.remove(getElementAt(coordX,coordY));
+
+						remove(temp.getProjectilePic());
+						animateHit(coordX, coordY);
+						enemyProjectiles.remove(temp);
+//						enemyHitCount++;
+//						calculateScore();
+//						displayScoreInGame();
+					
+//						System.out.println(enemyImages.size());
+					}
+				}
+				if(getElementAt(coordX,coordY)==Shield1) {
+					//remove(Shield1);
+					remove(temp.getProjectilePic());
+					enemyProjectiles.remove(temp);
+				}
+				else if(getElementAt(coordX,coordY)==Shield2) {
+					//remove(Shield2);
+					remove(temp.getProjectilePic());
+					enemyProjectiles.remove(temp);
+				}
+				//remove(getElementAt(coordX, coordY));
+				//singlePlayerProjectiles.remove(temp);
+			}
+		}
+	//}
+	
 	
 	public void animateHit(double coordX, double coordY) {
 		if(explodeNumber == 0) {
