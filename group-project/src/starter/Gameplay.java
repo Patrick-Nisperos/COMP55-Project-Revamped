@@ -749,7 +749,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		for(int i = 0; i < enemyProjectiles.size(); i++) {
 			Projectile temp = enemyProjectiles.get(i);
 			double coordX=temp.getEnemyProjectilePic().getX()+temp.getEnemyProjectilePic().getWidth()+1;
-			double coordY=temp.getEnemyProjectilePic().getY()-(temp.getEnemyProjectilePic().getHeight()/2);
+			double coordY=temp.getEnemyProjectilePic().getY()+(temp.getEnemyProjectilePic().getHeight()/2);
 			if(getElementAt(coordX,coordY) instanceof GImage) {
 				//for(GImage temp2 : enemyImages) {
 					//for(int k=0;k<enemyImages.size();k++) {
