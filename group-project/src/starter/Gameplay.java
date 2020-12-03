@@ -19,6 +19,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private Level levelOne = new Level(1);
 	private Level levelTwo = new Level(2);
 	private Level levelThree = new Level(3);
+	private Level levelFour = new Level(4);
 	
 	//List of Images of different screens
 	private GImage mainMenuScreen = new GImage("officialMainMenu.png");
@@ -27,6 +28,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private GImage winScreen = new GImage("singlePlayerWinScreen.png");
 	private GImage loseScreen = new GImage("singlePlayerLoseScreen.png");
 	private GImage scoreboardScreen = new GImage("scoreBoardScreen.png");
+	private GImage chooseBonusScreen = new GImage("ChooseBonusScreen.png");
 	
 	//List of Different buttons for different screens
 	private GRect singlePlayerButton = new GRect(500, 160, 270, 50);
@@ -43,6 +45,8 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private GRect winNextLevelButton = new GRect(685, 220, 270, 60);
 	private GRect loseReturnMainMenuButton = new GRect(480, 220, 280, 60);
 	private GRect loseRetryButton = new GRect(860, 220, 200, 60);
+	private GRect bonusAttackSpeedButton = new GRect(250, 220, 310, 60);
+	private GRect bonusMovementSpeedButton = new GRect(1000, 220, 370, 60);
 	
 	
 	//List of booleans for buttons
@@ -61,6 +65,8 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private boolean winNextLevelPressed = false;
 	private boolean loseReturnMainMenuPressed = false;
 	private boolean loseRetryPressed = false;
+	private boolean bonusAttackSpeedPressed = false;
+	private boolean bonusMovementSpeedPressed = false;
 	
 	//List of different timers
 	private Timer mainMenuTimer = new Timer(1000, this);
@@ -70,6 +76,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private Timer scoreboardScreenTimer = new Timer(1000,this);
 	private Timer loseScreenTimer = new Timer(1000,this);
 	private Timer winScreenTimer = new Timer(1000,this);
+	private Timer bonusScreenTimer = new Timer(1000,this);
 	private Timer gameTimer = new Timer(1000, this); //used to time in game, if run out, then you lose.
 	private Timer animationTimer = new Timer(1000, this);
 	private Timer enemyFireTimer = new Timer(1000000000, this);
@@ -102,9 +109,10 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private ArrayList<GImage> enemyImages = new ArrayList<GImage>();
 	private ArrayList<GImage> enemyMuzzleImages = new ArrayList<GImage>();
 	
-	
+	//variables for enemy
 	private int enemyHitCount = 0;
 	private int enemyFireDelay = 0;
+	private int enemyFireDelayReach = 100;
 	    
 	//Pictures and integers for the animation
 	private GImage explode1 = new GImage("Explosion1.png", 100, 200);
@@ -113,17 +121,26 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private GImage userFirePic = new GImage("userFirePic.png", 100, 200);
 	private GImage levelOneBackground1 = new GImage("snow top view.jpg");
 	private GImage levelOneBackground2 = new GImage("snow top view2.jpg");
+	private GImage levelFourBackground1 = new GImage("desert top view.jpg");
+	private GImage levelFourBackground2 = new GImage("desert top view2.jpg");
 	private int explodeNumber = 0;
 	private int animateNumber = 0;
 	private int singlePlayerFireNumber = 0; //used for user fire delay
+	private int singlePlayerFireNumberReach = 2; //used for user fire delay
 	private int gameTime = 100; 
 	private int gameTimeAmount = 0; //used for game time delay
 	
 	//level tracking variables
 	private boolean levelOneRepeat = false;
 	private boolean levelTwoRepeat = false;
+	private boolean levelThreeRepeat = false;
+	private boolean levelFourRepeat = false;
+	private int userLevelOneRepeat = 0;
+	private int userLevelTwoRepeat = 0;
+	private int userLevelThreeRepeat = 0;
+	private int userLevelFourRepeat = 0;
 	private int userLevel = 1;
-	private GLabel levelLabel = new GLabel("Level #", 1450, 30);
+	private GLabel levelLabel = new GLabel("Level #", 1400, 30);
 	
 	
 	public void init() {
@@ -234,6 +251,21 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			}
 		}
 		
+		if(bonusScreenTimer.isRunning()) {
+			//bonus screen attack speed button
+			if(e.getX() < bonusAttackSpeedButton.getX() + bonusAttackSpeedButton.getWidth() && e.getX() >= bonusAttackSpeedButton.getX() 
+					&& e.getY() < bonusAttackSpeedButton.getY() + bonusAttackSpeedButton.getHeight() &&
+					e.getY() >= bonusAttackSpeedButton.getY()) {
+				bonusAttackSpeedPressed = true;
+			}
+			//bonus screen Movement speed button
+			if(e.getX() < bonusMovementSpeedButton.getX() + bonusMovementSpeedButton.getWidth() && e.getX() >= bonusMovementSpeedButton.getX() 
+					&& e.getY() < bonusMovementSpeedButton.getY() + bonusMovementSpeedButton.getHeight() &&
+					e.getY() >= bonusMovementSpeedButton.getY()) {
+				bonusMovementSpeedPressed = true;
+			}
+			
+		}
 		
 		return;
 	}
@@ -271,7 +303,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			System.out.println("you pressed *w* fire projectile");
         	singlePlayerTank.setImage("blue tank.png");
 			singlePlayerFireNumber++;
-			if(singlePlayerFireNumber == 2) { // Delays the user fire
+			if(singlePlayerFireNumber == singlePlayerFireNumberReach) { // Delays the user fire
 				singlePlayerUserFire();
 				singlePlayerFireNumber = 0;
 			}
@@ -353,7 +385,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		}
 		if(enemyFireTimer.isRunning()) {
 			enemyFireDelay++;
-			if(enemyFireDelay == 100) {
+			if(enemyFireDelay == enemyFireDelayReach) {
 				enemyFire();
 				enemyFireDelay = 0;
 			}
@@ -378,6 +410,16 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			if(levelOneBackground2.getX() <= -1600) {
 				levelOneBackground2.setLocation(1600,0);
 			}
+			if(userLevel == 4) {
+				levelFourBackground1.move(-2, 0);
+				levelFourBackground2.move(-2, 0);
+				if(levelFourBackground1.getX() <= -1600) {
+					levelFourBackground1.setLocation(1600,0);
+				}
+				if(levelFourBackground2.getX() <= -1600) {
+					levelFourBackground2.setLocation(1600,0);
+				}
+			}
 		}
 		//control screen button recognition
 		if(controlScreenTimer.isRunning()) {
@@ -397,6 +439,20 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 				displayMenu();
 			}
 		}
+		//bonus screen timer button recognition
+		if(bonusScreenTimer.isRunning()) {
+			if(bonusAttackSpeedPressed) {
+				singlePlayerFireNumberReach = 1; //Makes the user attack faster
+				bonusScreenTimer.stop();
+				singlePlayerMode(userLevel);
+			}
+			if(bonusMovementSpeedPressed) {
+				singlePlayerSpeedX = 12; //Makes the user move faster
+				bonusScreenTimer.stop();
+				singlePlayerMode(userLevel);
+			}
+		}
+		
 		//Win screen button recognition
 		if(winScreenTimer.isRunning()) {
 			if(winReturnMainMenuPressed) {
@@ -412,10 +468,15 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			if(winNextLevelPressed) {
 				winScreenTimer.stop();
 				winNextLevelPressed = false;
-				if(userLevel != 3) {
+				if(userLevel != 4) {
 					userLevel++;
 				}
-				singlePlayerMode(userLevel); //Make sure this becomes the next level
+				if(userLevel == 4 && levelFourRepeat == false) {
+					displayBonusScreen();
+				}
+				else {
+					singlePlayerMode(userLevel); //Make sure this becomes the next level
+				}
 			}
 		}
 		//Lose screen button recognition
@@ -461,6 +522,37 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		
 	}
 	
+	public void checkIfLevelRepeat() {
+		if(userLevel == 1) { 
+			userLevelOneRepeat++; //userLevelOneRepeat is initialized at 0. so 2nd game or greater in the same level is repeat.
+			if(userLevelOneRepeat >= 2) {
+				levelOneRepeat = true;
+			}
+		}
+		if(userLevel == 2) {
+			userLevelTwoRepeat++; //userLevelTwoRepeat is initialized at 0. so 2nd game or greater in the same level is repeat.
+			if(userLevelTwoRepeat >= 2) {
+				levelTwoRepeat = true;
+				userLevelTwoRepeat = 0;
+			}
+		}
+		if(userLevel == 3) {
+			userLevelThreeRepeat++; //userLevelTwoRepeat is initialized at 0. so 2nd game or greater in the same level is repeat.
+			if(userLevelThreeRepeat >= 2) {
+				levelThreeRepeat = true;
+				userLevelThreeRepeat = 0;
+			}
+			
+		}
+		if(userLevel == 4) {
+			userLevelFourRepeat++; //userLevelTwoRepeat is initialized at 0. so 2nd game or greater in the same level is repeat.
+			if(userLevelFourRepeat >= 2) {
+				levelFourRepeat = true;
+				userLevelFourRepeat = 0;
+			}
+		}
+	}
+	
 	public void singlePlayerMode(int levelNumber) {
 		singlePlayerTankHealth = 5;
 		gameTimer.start();
@@ -472,9 +564,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		removeAll(); //Removes everything from screen.
 		System.out.println(enemyImages.size());
 		System.out.println(enemyRectangles.size());
-		if(gameNumber >= 1) { //game number 1 is actually the 2nd game already. because gameNumber initialized at -1.
-			levelOneRepeat = true;
-		}
+		checkIfLevelRepeat();
 		//Level one initialize
 		if(levelNumber == 1 && levelOneRepeat == false) {
 			levelOneBackground1.setSize(1600,900);
@@ -509,8 +599,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			enemyRectangles = levelTwo.createEnemyRect();
 			enemyImages = levelTwo.createEnemyImages();
 		}
-		if(levelNumber == 3) {
-			enemyHitCount = -30; // 10 extra for 2nd row, 20 extra for 3rd row
+		if(levelNumber == 3 && levelThreeRepeat == false) {
 			levelOneBackground1.setSize(1600,900);
 			levelOneBackground2.setSize(1600,900);
 			levelOneBackground1.setLocation(0,0);
@@ -518,10 +607,31 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			levelThree.initLevel();
 			levelThree.printArrayList();
 			System.out.println("level three was initialized");
+
+		}
+		if(levelNumber == 3) {
+			enemyHitCount = -30; // 10 extra for 2nd row, 20 extra for 3rd row
 			add(levelOneBackground1);
 			add(levelOneBackground2);
 			enemyRectangles = levelThree.createEnemyRect();
 			enemyImages = levelThree.createEnemyImages();
+		}
+		if(levelNumber == 4 && levelFourRepeat == false) {
+			levelFourBackground1.setSize(1600,900);
+			levelFourBackground2.setSize(1600,900);
+			levelFourBackground1.setLocation(0,0);
+			levelFourBackground2.setLocation(1600,0);
+			levelFour.initLevel();
+			levelFour.printArrayList();
+			enemyFireDelayReach = 60; //Makes the enemies shoot faster
+			System.out.println("level four was initialized");
+		}
+		if(levelNumber == 4) {
+			enemyHitCount = -40; // 20 extra for 2nd row, 20 extra for 3rd row
+			add(levelFourBackground1);
+			add(levelFourBackground2);
+			enemyRectangles = levelFour.createEnemyRect();
+			enemyImages = levelFour.createEnemyImages();
 		}
 		pasteEnemyImages();
 		pasteEnemies();
@@ -537,8 +647,12 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	    singlePlayerHealthLabel.setFont("AgencyFB-Bold-40");
 	    add(singlePlayerHealthLabel);
 	    levelLabel.setLabel("Level # " + userLevel);
-	    levelLabel.setFont("AgencyFB-Bold-30");
 	    levelLabel.setColor(Color.GREEN);
+	    if(userLevel == 4) {
+	    	levelLabel.setColor(Color.black);
+	    	levelLabel.setLabel("Level # 4 (HARD)");
+	    }
+	    levelLabel.setFont("AgencyFB-Bold-30");
 	    add(levelLabel);
 	    
 	   
@@ -573,6 +687,19 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			gameNumber.setFont("AgencyFB-BOLD-50");
 			add(gameNumber);
 		}
+	}
+	
+	public void displayBonusScreen() { //Displays the bonus screen
+		bonusScreenTimer.start();
+		System.out.println("Bonus Entered");
+		removeAll(); //Removes everything from screen.
+		enemyRectangles.clear();
+		enemyImages.clear();
+		singlePlayerProjectiles.clear();
+		chooseBonusScreen.setSize(1600,900);
+		add(chooseBonusScreen);
+		add(bonusAttackSpeedButton);
+		add(bonusMovementSpeedButton);
 	}
 	
 	public void coopMode() {
@@ -620,10 +747,6 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		GLabel scoreLabel = new GLabel(" " + singlePlayerScores.get(gameNumber),700,350);
 		scoreLabel.setFont("AgencyFB-BOLD-50");
 		add(scoreLabel);
-	}
-	
-	public void userMovement() { //controls the user movement mechanics
-		
 	}
 	
 	public void enemyMovement() { //controls the enemy movement mechanics

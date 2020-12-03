@@ -182,6 +182,43 @@ public class Level {
 			shields.add(tempGameShield1);
 			shields.add(tempGameShield2);
 		}
+		if(levelNumber == 4) {
+			numberOfEnemiesMedium = 20;
+			numberOfEnemiesHeavy = 10;
+			for(int i = 0; i < 31; i++) {
+				tempX++;
+				if(i < 10) { //layer one
+					Enemy heavy = new Enemy(typeHeavy, false, 80 + (80 * tempX), 50 , enemyProjectile);
+					enemies.add(heavy);
+					Enemy heavy1 = new Enemy(typeHeavy, false, 80 + (80 * tempX), 50 , enemyProjectile); //1 extra health
+					enemies.add(heavy1);
+					Enemy heavy2 = new Enemy(typeHeavy, false, 80 + (80 * tempX), 50 , enemyProjectile); //1 extra health
+					enemies.add(heavy2);
+					if(tempX == 10) {
+						tempX = 0;
+					}
+				} if(i > 9 && i < 20) { //layer two
+					Enemy medium = new Enemy(typeMedium, false, 80 + (80 * tempX), 150 , enemyProjectile); 
+					enemies.add(medium);
+					Enemy medium1 = new Enemy(typeMedium, false, 80 + (80 * tempX), 150 , enemyProjectile); //1 extra health
+					enemies.add(medium1);
+					if(tempX == 10) {
+						tempX = 0;
+					}
+				} if(i > 20 && i < 31) { //layer three
+					Enemy medium2 = new Enemy(typeMedium, false, 80 + (80 * tempX), 250 , enemyProjectile);
+					enemies.add(medium2);
+					Enemy medium3 = new Enemy(typeMedium, false, 80 + (80 * tempX), 250 , enemyProjectile); // 1 extra health
+					enemies.add(medium3);
+					if(tempX == 10) {
+						tempX = 0;
+					}
+				}
+			}
+			shields.add(tempGameShield1);
+			shields.add(tempGameShield2);
+		}
+		
 	}
 	public void printArrayList() { //Prints the arrayList 
 		System.out.println("size: " + enemies.size());
