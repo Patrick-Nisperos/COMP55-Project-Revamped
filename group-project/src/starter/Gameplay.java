@@ -367,6 +367,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			displayHealthInGame();
 			if(enemyHitCount==30) { // Track user win
 				gameTimer.stop();
+				enemyFireTimer.stop();
 				singlePlayerTimer.stop();
 				gameTime = 100;
 				enemyHitCount=0;
@@ -376,6 +377,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			}
 			if(gameTime == 0 || singlePlayerTankHealth == 0) { //Track user loss
 				singlePlayerTimer.stop();
+				enemyFireTimer.stop();
 				gameTimer.stop();
 				gameTime = 100;
 				enemyHitCount = 0;
@@ -610,7 +612,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 
 		}
 		if(levelNumber == 3) {
-			enemyHitCount = -30; // 10 extra for 2nd row, 20 extra for 3rd row
+			enemyHitCount = -30; // 10 extra for 2nd row, 20 extra for 3rd row 
 			add(levelOneBackground1);
 			add(levelOneBackground2);
 			enemyRectangles = levelThree.createEnemyRect();
@@ -899,11 +901,13 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 				if(getElementAt(coordX,coordY)==Shield1) {
 					//remove(Shield1);
 					remove(temp.getEnemyProjectilePic());
+					animateHit(coordX, coordY);
 					enemyProjectiles.remove(temp);
 				}
 				else if(getElementAt(coordX,coordY)==Shield2) {
 					//remove(Shield2);
 					remove(temp.getEnemyProjectilePic());
+					animateHit(coordX, coordY);
 					enemyProjectiles.remove(temp);
 				}
 				//remove(getElementAt(coordX, coordY));
