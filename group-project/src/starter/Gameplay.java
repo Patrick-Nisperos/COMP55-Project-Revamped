@@ -852,7 +852,9 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 					
 					if(enemyImages.get(k)==getElementAt(coordX,coordY)) {
 						remove(enemyImages.get(k));
+						remove(enemyRectangles.get(k));
 						enemyImages.remove(k);
+						enemyRectangles.remove(k);
 						
 						//enemyImages.remove(getElementAt(coordX,coordY));
 						//enemyRectangles.remove(getElementAt(coordX,coordY));
