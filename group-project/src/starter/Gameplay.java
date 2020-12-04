@@ -79,7 +79,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private Timer bonusScreenTimer = new Timer(1000,this);
 	private Timer gameTimer = new Timer(1000, this); //used to time in game, if run out, then you lose.
 	private Timer animationTimer = new Timer(1000, this);
-	private Timer enemyFireTimer = new Timer(1000000000, this);
+	private Timer enemyFireTimer = new Timer(1000, this);
 
 	
 	//List of lists of shields and enemies and enemy movement
@@ -113,6 +113,8 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private int enemyHitCount = 0;
 	private int enemyFireDelay = 0;
 	private int enemyFireDelayReach = 100;
+	private GImage endOfScreenEnemy = new GImage("singlePlayerLoseScreen.png", 0, 900);
+	private GImage endOfScreenUser = new GImage("singlePlayerLoseScreen.png", 0, -1130);
 	    
 	//Pictures and integers for the animation
 	private GImage explode1 = new GImage("Explosion1.png", 100, 200);
@@ -303,7 +305,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			System.out.println("you pressed *w* fire projectile");
         	singlePlayerTank.setImage("blue tank.png");
 			singlePlayerFireNumber++;
-			if(singlePlayerFireNumber == singlePlayerFireNumberReach) { // Delays the user fire
+			if(singlePlayerFireNumber >= singlePlayerFireNumberReach) { // Delays the user fire
 				singlePlayerUserFire();
 				singlePlayerFireNumber = 0;
 			}
@@ -387,7 +389,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		}
 		if(enemyFireTimer.isRunning()) {
 			enemyFireDelay++;
-			if(enemyFireDelay == enemyFireDelayReach) {
+			if(enemyFireDelay >= enemyFireDelayReach) {
 				enemyFire();
 				enemyFireDelay = 0;
 			}
@@ -656,7 +658,8 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	    }
 	    levelLabel.setFont("AgencyFB-Bold-30");
 	    add(levelLabel);
-	    
+		add(endOfScreenEnemy);
+		add(endOfScreenUser);
 	   
 	}
 	
@@ -863,6 +866,10 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 					
 						System.out.println(enemyImages.size());
 					}
+					if(endOfScreenUser==getElementAt(coordX,coordY)) {
+						remove(temp.getProjectilePic());
+						singlePlayerProjectiles.remove(temp);
+					}
 				}
 				if(getElementAt(coordX,coordY)==Shield1) {
 					//remove(Shield1);
@@ -895,6 +902,10 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 
 						remove(temp.getEnemyProjectilePic());
 						animateHit(coordX, coordY);
+						enemyProjectiles.remove(temp);
+					}
+					if(endOfScreenEnemy==getElementAt(coordX,coordY)) {
+						remove(temp.getEnemyProjectilePic());
 						enemyProjectiles.remove(temp);
 					}
 				}
