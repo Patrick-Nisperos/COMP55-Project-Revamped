@@ -5,11 +5,15 @@ import acm.program.*;
 import acm.util.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 import javax.swing.Action;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Gameplay extends GraphicsProgram implements ActionListener,KeyListener{
 	public static final int PROGRAM_WIDTH = 1600;
@@ -144,11 +148,34 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private int userLevel = 1;
 	private GLabel levelLabel = new GLabel("Level #", 1400, 30);
 	
+	//File reading variables for enemy fire
+	private ArrayList<Integer> tankNumbers = new ArrayList<Integer>();
+	private ArrayList<Double> tankIntervals = new ArrayList<Double>();
+	
+	// Reads in file test cases for enemy firing times
+	public void scanEnemyFireTimes() {
+
+		// Must use a try and catch block to use scanner since it is in main.
+		try {
+			Scanner scanner = new Scanner(new File("enemyFireRates.txt"));
+			while (scanner.hasNext()) {
+				tankNumbers.add(scanner.nextInt());
+				tankIntervals.add(scanner.nextDouble());
+			}
+		} 
+		catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} 
+		
+		System.out.println("Finished scanning enemy fire rates");
+	}
+	
 	
 	public void init() {
 		setSize(PROGRAM_WIDTH, PROGRAM_HEIGHT);
 		addKeyListeners();
 		addMouseListeners();
+		scanEnemyFireTimes();
 	}
 	
 	//**** Input Listeners ****
