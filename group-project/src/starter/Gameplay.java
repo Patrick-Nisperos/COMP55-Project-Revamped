@@ -83,7 +83,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private Timer bonusScreenTimer = new Timer(1000,this);
 	private Timer gameTimer = new Timer(1000, this); //used to time in game, if run out, then you lose.
 	private Timer animationTimer = new Timer(1000, this);
-	private Timer enemyFireTimer = new Timer(1000, this);
+	
 
 	
 	//List of lists of shields and enemies and enemy movement
@@ -171,11 +171,22 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	}
 	
 	
+	// Proper way of setting enemy to fire every 3000 ms (3 secs)
+	private Timer enemyFireTimer = new Timer(3000,new ActionListener() {
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			enemyFire();
+		}
+		
+	});
+	
 	public void init() {
 		setSize(PROGRAM_WIDTH, PROGRAM_HEIGHT);
 		addKeyListeners();
 		addMouseListeners();
 		scanEnemyFireTimes();
+		
 	}
 	
 	//**** Input Listeners ****
@@ -338,7 +349,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			}
 		}
 	}	
-	
+
 
 	public void actionPerformed(ActionEvent e) {
 		//Main menu button click recognition
@@ -371,29 +382,13 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			}
 	
 		}		
-		//pause screen button recognition 
-//		if(pauseTimer.isRunning()) {
-//			if(pauseReturnMainMenuPressed) {
-//				singlePlayerTimer.stop();
-//				gameTimer.stop();
-//				pauseTimer.stop();
-//				pauseReturnMainMenuPressed = false;
-//				displayMenu();
-//			}
-//			if(resumeButtonPressed) {
-//				pauseTimer.stop();
-//				singlePlayerTimer.stop();
-//				gameTimer.stop();
-//				//Temporary here, later we must figure out how to resume a game properly.
-//				singlePlayerMode();
-//			}
-//		}
 		if(singlePlayerTimer.isRunning()) {
 			enemyMovement();
 			singlePlayerMoveProjectile();
 			singlePlayerObjHit();
 			enemyObjHit();
 			displayHealthInGame();
+			enemyProjectileMovement();
 			if(enemyHitCount==30) { // Track user win
 				gameTimer.stop();
 				enemyFireTimer.stop();
@@ -413,14 +408,6 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 				loseScreenTimer.start();
 				userLose();
 			}
-		}
-		if(enemyFireTimer.isRunning()) {
-			enemyFireDelay++;
-			if(enemyFireDelay >= enemyFireDelayReach) {
-				enemyFire();
-				enemyFireDelay = 0;
-			}
-			enemyProjectileMovement();
 		}
 		if(animationTimer.isRunning()) {
 			animateNumber++;
