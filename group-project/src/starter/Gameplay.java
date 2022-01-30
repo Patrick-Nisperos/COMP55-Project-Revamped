@@ -151,71 +151,72 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	private ArrayList<Integer> tankNumbers = new ArrayList<Integer>();
 	private ArrayList<Integer> tankIntervals = new ArrayList<Integer>();
 	// ENENMY IMAGES are 0-9 first layer, 10-19 second layer, 20 - 29 third layer
-	// Default delay of enemyFireTimers set to 0.
-	private Timer enemyFireTimer0 = new Timer(3000,new ActionListener() {
+	// Default delay of enemyFireTimers set to incremental
+	// Enemy Timers. (10) for each row
+	private Timer enemyFireTimer0 = new Timer(1000,new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			//TODO: Change enemyFire to take in parameters of which enemy.
-			enemyFire();
+			enemyFire(0);
 		}
 		
 	});
-	private Timer enemyFireTimer1 = new Timer(3000,new ActionListener() {
+	private Timer enemyFireTimer1 = new Timer(2000,new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			enemyFire();
+			enemyFire(1);
 		}
 	});
 	private Timer enemyFireTimer2 = new Timer(3000,new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			enemyFire();
+			enemyFire(2);
 		}
 	});
-	private Timer enemyFireTimer3 = new Timer(3000,new ActionListener() {
+	private Timer enemyFireTimer3 = new Timer(4000,new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			enemyFire();
+			enemyFire(3);
 		}
 	});
-	private Timer enemyFireTimer4 = new Timer(3000,new ActionListener() {
+	private Timer enemyFireTimer4 = new Timer(5000,new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			enemyFire();
+			enemyFire(4);
 		}
 	});
-	private Timer enemyFireTimer5 = new Timer(3000,new ActionListener() {
+	private Timer enemyFireTimer5 = new Timer(6000,new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			enemyFire();
+			enemyFire(5);
 		}
 	});
-	private Timer enemyFireTimer6 = new Timer(3000,new ActionListener() {
+	private Timer enemyFireTimer6 = new Timer(7000,new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			enemyFire();
+			enemyFire(6);
 		}
 	});
-	private Timer enemyFireTimer7 = new Timer(3000,new ActionListener() {
+	private Timer enemyFireTimer7 = new Timer(8000,new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			enemyFire();
+			enemyFire(7);
 		}
 	});
-	private Timer enemyFireTimer8 = new Timer(3000,new ActionListener() {
+	private Timer enemyFireTimer8 = new Timer(9000,new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			enemyFire();
+			enemyFire(8);
 		}
 	});
-	private Timer enemyFireTimer9 = new Timer(3000,new ActionListener() {
+	private Timer enemyFireTimer9 = new Timer(10000,new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			enemyFire();
+			enemyFire(9);
 		}
 	});
 	
-	// Enemy Timers. (10) for each row
+
 	private ArrayList<Timer> enemyFireTimers = new ArrayList<Timer>(
 			Arrays.asList(enemyFireTimer0,enemyFireTimer1,enemyFireTimer2
 					,enemyFireTimer3,enemyFireTimer4,enemyFireTimer5
@@ -239,11 +240,11 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		System.out.println("Finished scanning enemy fire rates");
 	}
 	
-	
 	// Reads in the tank intervals, turns on the timers.
 	public void setEnemyFireTimers() {
 		for (int i = 0; i < enemyFireTimers.size(); i++) {
 			enemyFireTimers.get(i).setDelay(tankIntervals.get(i));
+			enemyFireTimers.get(i).setInitialDelay(tankIntervals.get(i));
 		}
 	}
 	
@@ -756,8 +757,6 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		add(endOfScreenUser);
 	   
 	}
-	
-	
 
 	
 	public void pauseGame() { //Displays a screen when game is paused
@@ -884,20 +883,55 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		}
 	}
 	
-	public void enemyFire() { //controls the enemy fire mechanics
-		for(GImage tempImage : enemyImages) {
-			if(canEnemyFire(tempImage)) {
+
+	
+	public void enemyFire(int tankNumber) {
+		
+		int offset = enemyImages.size() - 20;
+		int offset2 = enemyImages.size() - 10;
+		GImage tempImage = enemyImages.get(tankNumber); // first (top) layer tank
+		if (enemyImages.size() > 19) {
+			GImage tempImage2 = enemyImages.get(tankNumber + offset); // second (middle) layer tank
+			if (canEnemyFire(tempImage2) && !canEnemyFire(tempImage)){
 				Projectile temp = new Projectile(8, 50, 40);
 				GImage enemyFirePic = new GImage("enemy muzzle flash.png", 100, 200);
-				temp.setCoord(tempImage.getX(), tempImage.getY());
+				temp.setCoord(tempImage2.getX(), tempImage2.getY());
 				add(temp.getEnemyProjectilePic());
 				enemyProjectiles.add(temp);
-				enemyFirePic.setLocation(tempImage.getX() - 10, tempImage.getY() + 20);
+				enemyFirePic.setLocation(tempImage2.getX() - 10, tempImage2.getY() + 20);
 				enemyMuzzleImages.add(enemyFirePic);
 				add(enemyFirePic);
 			}
 		}
+
+		if (enemyImages.size() > 9) {
+			GImage tempImage3 = enemyImages.get(tankNumber + offset2); // third (bottom) layer tank
+			if (canEnemyFire(tempImage3)) {
+				Projectile temp = new Projectile(8, 50, 40);
+				GImage enemyFirePic = new GImage("enemy muzzle flash.png", 100, 200);
+				temp.setCoord(tempImage3.getX(), tempImage3.getY());
+				add(temp.getEnemyProjectilePic());
+				enemyProjectiles.add(temp);
+				enemyFirePic.setLocation(tempImage3.getX() - 10, tempImage3.getY() + 20);
+				enemyMuzzleImages.add(enemyFirePic);
+				add(enemyFirePic);
+			}
+		}
+
+		// If first layer tank can fire, then fire.
+		if (canEnemyFire(tempImage)) {
+			Projectile temp = new Projectile(8, 50, 40);
+			GImage enemyFirePic = new GImage("enemy muzzle flash.png", 100, 200);
+			temp.setCoord(tempImage.getX(), tempImage.getY());
+			add(temp.getEnemyProjectilePic());
+			enemyProjectiles.add(temp);
+			enemyFirePic.setLocation(tempImage.getX() - 10, tempImage.getY() + 20);
+			enemyMuzzleImages.add(enemyFirePic);
+			add(enemyFirePic);
+		}
+
 	}
+	
 	public void enemyProjectileMovement() { //Moves the enemy projectiles
 		for(Projectile temp : enemyProjectiles) {
 			temp.getEnemyProjectilePic().move(0, temp.getSpeed());
