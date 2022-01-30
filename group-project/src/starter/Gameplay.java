@@ -13,6 +13,7 @@ import javax.swing.Action;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Gameplay extends GraphicsProgram implements ActionListener,KeyListener{
@@ -115,8 +116,6 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	
 	//variables for enemy
 	private int enemyHitCount = 0;
-	private int enemyFireDelay = 0;
-	private int enemyFireDelayReach = 100;
 	private GImage endOfScreenEnemy = new GImage("singlePlayerLoseScreen.png", 0, 900);
 	private GImage endOfScreenUser = new GImage("singlePlayerLoseScreen.png", 0, -1130);
 	    
@@ -150,8 +149,78 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	
 	//File reading variables for enemy fire
 	private ArrayList<Integer> tankNumbers = new ArrayList<Integer>();
-	private ArrayList<Double> tankIntervals = new ArrayList<Double>();
+	private ArrayList<Integer> tankIntervals = new ArrayList<Integer>();
+	// ENENMY IMAGES are 0-9 first layer, 10-19 second layer, 20 - 29 third layer
+	// Default delay of enemyFireTimers set to 0.
+	private Timer enemyFireTimer0 = new Timer(3000,new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			//TODO: Change enemyFire to take in parameters of which enemy.
+			enemyFire();
+		}
+		
+	});
+	private Timer enemyFireTimer1 = new Timer(3000,new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			enemyFire();
+		}
+	});
+	private Timer enemyFireTimer2 = new Timer(3000,new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			enemyFire();
+		}
+	});
+	private Timer enemyFireTimer3 = new Timer(3000,new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			enemyFire();
+		}
+	});
+	private Timer enemyFireTimer4 = new Timer(3000,new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			enemyFire();
+		}
+	});
+	private Timer enemyFireTimer5 = new Timer(3000,new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			enemyFire();
+		}
+	});
+	private Timer enemyFireTimer6 = new Timer(3000,new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			enemyFire();
+		}
+	});
+	private Timer enemyFireTimer7 = new Timer(3000,new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			enemyFire();
+		}
+	});
+	private Timer enemyFireTimer8 = new Timer(3000,new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			enemyFire();
+		}
+	});
+	private Timer enemyFireTimer9 = new Timer(3000,new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			enemyFire();
+		}
+	});
 	
+	// Enemy Timers. (10) for each row
+	private ArrayList<Timer> enemyFireTimers = new ArrayList<Timer>(
+			Arrays.asList(enemyFireTimer0,enemyFireTimer1,enemyFireTimer2
+					,enemyFireTimer3,enemyFireTimer4,enemyFireTimer5
+					,enemyFireTimer6,enemyFireTimer7,enemyFireTimer8
+					,enemyFireTimer9));
 	// Reads in file test cases for enemy firing times
 	public void scanEnemyFireTimes() {
 
@@ -160,7 +229,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			Scanner scanner = new Scanner(new File("enemyFireRates.txt"));
 			while (scanner.hasNext()) {
 				tankNumbers.add(scanner.nextInt());
-				tankIntervals.add(scanner.nextDouble());
+				tankIntervals.add(scanner.nextInt());
 			}
 		} 
 		catch (FileNotFoundException e) {
@@ -171,21 +240,33 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	}
 	
 	
-	// Proper way of setting enemy to fire every 3000 ms (3 secs)
-	private Timer enemyFireTimer = new Timer(3000,new ActionListener() {
-		
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			enemyFire();
+	// Reads in the tank intervals, turns on the timers.
+	public void setEnemyFireTimers() {
+		for (int i = 0; i < enemyFireTimers.size(); i++) {
+			enemyFireTimers.get(i).setDelay(tankIntervals.get(i));
 		}
-		
-	});
+	}
+	
+	// turns on the enemy firing timers 
+	public void startEnemyFireTimers() {
+		for (int i = 0; i < enemyFireTimers.size(); i++) {
+			enemyFireTimers.get(i).start();
+		}
+	}
+	
+	// turns off the enemy firing timers
+	public void stopEnemyFireTimers() {
+		for (int i = 0; i < enemyFireTimers.size(); i++) {
+			enemyFireTimers.get(i).stop();
+		}
+	}
 	
 	public void init() {
 		setSize(PROGRAM_WIDTH, PROGRAM_HEIGHT);
 		addKeyListeners();
 		addMouseListeners();
 		scanEnemyFireTimes();
+		setEnemyFireTimers();
 		
 	}
 	
@@ -391,7 +472,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			enemyProjectileMovement();
 			if(enemyHitCount==30) { // Track user win
 				gameTimer.stop();
-				enemyFireTimer.stop();
+				stopEnemyFireTimers();
 				singlePlayerTimer.stop();
 				gameTime = 100;
 				enemyHitCount=0;
@@ -401,7 +482,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			}
 			if(gameTime == 0 || singlePlayerTankHealth == 0) { //Track user loss
 				singlePlayerTimer.stop();
-				enemyFireTimer.stop();
+				stopEnemyFireTimers();
 				gameTimer.stop();
 				gameTime = 100;
 				enemyHitCount = 0;
@@ -577,7 +658,7 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 	    gameNumber++;
 		singlePlayerTimer.start();
 		animationTimer.start();
-		enemyFireTimer.start();
+		startEnemyFireTimers();
 		System.out.println("Single player mode entered.");
 		removeAll(); //Removes everything from screen.
 		System.out.println(enemyImages.size());
@@ -641,7 +722,6 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 			levelFourBackground2.setLocation(1600,0);
 			levelFour.initLevel();
 			levelFour.printArrayList();
-			enemyFireDelayReach = 60; //Makes the enemies shoot faster
 			System.out.println("level four was initialized");
 		}
 		if(levelNumber == 4) {
@@ -676,6 +756,9 @@ public class Gameplay extends GraphicsProgram implements ActionListener,KeyListe
 		add(endOfScreenUser);
 	   
 	}
+	
+	
+
 	
 	public void pauseGame() { //Displays a screen when game is paused
 		pauseTimer.start();
